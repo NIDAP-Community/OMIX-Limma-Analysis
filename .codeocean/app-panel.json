@@ -1,0 +1,200 @@
+{
+  "version": 1,
+  "named_parameters": true,
+  "general": {
+    "title": "OMIX Limma Analysis",
+    "instructions": "Fit limma models to a continuous feature-by-sample matrix and aligned sample metadata. Select files explicitly, or attach one upstream result bundle and leave the file selectors blank for unambiguous discovery.\n\nFor OMIX Seurat Pseudobulk, keep the continuous matrix, Pseudobulk_Sample_Metadata.csv, and Pseudobulk_Manifest.dcf together. The manifest selects eBayes for Harmony means or eBayes with trend for SCTransform means when Variance Model is auto. Raw-count pseudobulk is rejected and must be analyzed with OMIX DEG Analysis."
+  },
+  "datasets": [],
+  "categories": [
+    {
+      "id": "inputs",
+      "name": "Inputs",
+      "description": "Provide one continuous matrix, matching sample metadata, and an optional OMIX Pseudobulk manifest."
+    },
+    {
+      "id": "model",
+      "name": "Model",
+      "description": "Define groups, contrasts, optional covariates, and repeated-measure blocking."
+    },
+    {
+      "id": "data",
+      "name": "Data Interpretation",
+      "description": "Declare input scale, variance model, and duplicate-feature summarization."
+    },
+    {
+      "id": "advanced",
+      "name": "Advanced",
+      "description": "Restrict samples or control whether modeled values are appended to the result table."
+    }
+  ],
+  "parameters": [
+    {
+      "id": "matrix",
+      "param_name": "matrix",
+      "category": "inputs",
+      "name": "Continuous Matrix File",
+      "description": "Feature-by-sample CSV, TSV, TXT, or RDS. Leave blank to discover exactly one compatible continuous matrix under /data.",
+      "type": "file",
+      "value_type": "string"
+    },
+    {
+      "id": "metadata",
+      "param_name": "metadata",
+      "category": "inputs",
+      "name": "Sample Metadata File",
+      "description": "Aligned sample metadata CSV, TSV, TXT, or RDS. Leave blank to discover exactly one compatible metadata table under /data.",
+      "type": "file",
+      "value_type": "string"
+    },
+    {
+      "id": "pseudobulk_manifest",
+      "param_name": "pseudobulk_manifest",
+      "category": "inputs",
+      "name": "Pseudobulk Manifest",
+      "description": "Optional Pseudobulk_Manifest.dcf. Leave blank to use one unambiguous attached manifest or to run a general continuous matrix without one.",
+      "type": "file",
+      "value_type": "string"
+    },
+    {
+      "id": "gene_names_column",
+      "param_name": "gene_names_column",
+      "category": "inputs",
+      "name": "Feature ID Column",
+      "description": "Feature identifier column in the matrix.",
+      "type": "text",
+      "value_type": "string",
+      "default_value": "GeneName"
+    },
+    {
+      "id": "sample_names_column",
+      "param_name": "sample_names_column",
+      "category": "inputs",
+      "name": "Sample ID Column",
+      "description": "Unique sample identifier column in sample metadata.",
+      "type": "text",
+      "value_type": "string",
+      "default_value": "Sample"
+    },
+    {
+      "id": "contrast_variable_columns",
+      "param_name": "contrast_variable_columns",
+      "category": "model",
+      "name": "Contrast Variable Columns",
+      "description": "One or two comma-separated metadata columns defining modeled groups.",
+      "type": "text",
+      "value_type": "string",
+      "default_value": "Group"
+    },
+    {
+      "id": "contrasts",
+      "param_name": "contrasts",
+      "category": "model",
+      "name": "Contrasts",
+      "description": "Required comma-separated limma contrast expressions, such as B-A.",
+      "type": "text",
+      "value_type": "string",
+      "required": true
+    },
+    {
+      "id": "covariate_columns",
+      "param_name": "covariate_columns",
+      "category": "model",
+      "name": "Covariate Columns",
+      "description": "Optional comma-separated fixed-effect metadata columns.",
+      "type": "text",
+      "value_type": "string",
+      "default_value": ""
+    },
+    {
+      "id": "donor_variable_column",
+      "param_name": "donor_variable_column",
+      "category": "model",
+      "name": "Donor Variable Column",
+      "description": "Optional repeated-measure donor or patient column. Use only when a donor contributes multiple modeled profiles.",
+      "type": "text",
+      "value_type": "string",
+      "default_value": ""
+    },
+    {
+      "id": "input_kind",
+      "param_name": "input_kind",
+      "category": "data",
+      "name": "Input Kind",
+      "description": "Declared matrix scale. Raw counts and untransformed proportions are not accepted.",
+      "type": "list",
+      "value_type": "string",
+      "default_value": "log2_expression",
+      "extra_data": [
+        "log2_expression",
+        "enrichment_score",
+        "continuous_score"
+      ]
+    },
+    {
+      "id": "variance_model",
+      "param_name": "variance_model",
+      "category": "data",
+      "name": "Variance Model",
+      "description": "auto uses a compatible Pseudobulk manifest recommendation, otherwise template-equivalent eBayes. Select ebayes_trend only for a justified mean-dependent variance trend.",
+      "type": "list",
+      "value_type": "string",
+      "default_value": "auto",
+      "extra_data": [
+        "auto",
+        "ebayes",
+        "ebayes_trend"
+      ]
+    },
+    {
+      "id": "summarization_method",
+      "param_name": "summarization_method",
+      "category": "data",
+      "name": "Duplicate Feature Summarization",
+      "description": "How duplicate feature IDs are combined before modeling.",
+      "type": "list",
+      "value_type": "string",
+      "default_value": "mean",
+      "extra_data": [
+        "mean",
+        "max",
+        "sum"
+      ]
+    },
+    {
+      "id": "samples_to_include",
+      "param_name": "samples_to_include",
+      "category": "advanced",
+      "name": "Samples to Include",
+      "description": "Optional comma-separated sample IDs. Leave blank to use all metadata samples found in the matrix, in metadata order.",
+      "type": "text",
+      "value_type": "string",
+      "default_value": ""
+    },
+    {
+      "id": "return_matrix",
+      "param_name": "return_matrix",
+      "category": "advanced",
+      "name": "Append Modeled Matrix",
+      "description": "Append the aligned modeled sample values to Limma_Analysis.csv.",
+      "type": "list",
+      "value_type": "string",
+      "default_value": "true",
+      "extra_data": [
+        "true",
+        "false"
+      ]
+    }
+  ],
+  "results": [
+    {
+      "file_name": "Limma_Analysis.csv"
+    },
+    {
+      "file_name": "Sample_Metadata.csv"
+    },
+    {
+      "file_name": "run_summary.txt"
+    }
+  ]
+}

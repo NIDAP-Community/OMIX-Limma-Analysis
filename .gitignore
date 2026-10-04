@@ -1,0 +1,21 @@
+# Deployment-mounted inputs and generated outputs
+/data/
+/results/
+/scratch/
+
+# Local editor, R, Python, and operating-system state
+.DS_Store
+.RData
+.Rhistory
+.Rproj.user/
+__pycache__/
+*.pyc
+
+# Credentials and local environment overrides
+.env
+.env.*
+!.env.example
+
+# Package caches
+/renv/library/
+/renv/staging/

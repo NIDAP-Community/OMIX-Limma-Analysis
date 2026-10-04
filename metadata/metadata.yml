@@ -1,0 +1,12 @@
+metadata_version: 1
+name: OMIX Limma Analysis
+description: >-
+  Fits limma linear or donor-blocked models to a declared continuous
+  feature-by-sample matrix with aligned sample metadata.
+tags:
+  - differential-expression
+  - limma
+  - continuous-expression
+  - pseudobulk
+authors:
+  - name: Maggie Cam
