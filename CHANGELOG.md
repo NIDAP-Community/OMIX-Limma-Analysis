@@ -2,6 +2,8 @@
 
 ## Unreleased
 
+## 0.1.0 - 2026-10-04
+
 ### Added
 
 - Initial Code Ocean deployment adapter for canonical OMIX Limma Analysis
@@ -13,5 +15,10 @@
 - Complete App Panel coverage of the canonical user-settable interface.
 - Local input-discovery, workflow-handoff, App Panel, and source-parity tests.
 
-Representative Code Ocean validation, adapter tag, and platform release remain
-pending.
+### Validated
+
+- Code Ocean release-producing run `1134919` exercised the Seurat Pseudobulk
+  SCTransform mean-expression handoff and resolved `variance_model = auto` to
+  `ebayes_trend` from the attached manifest.
+- Standard Capsule release `1.0` was created from source capsule `8635652` at
+  `ffab7e89-72c4-4271-b888-b02a1e06db7c/tree/v1`.
