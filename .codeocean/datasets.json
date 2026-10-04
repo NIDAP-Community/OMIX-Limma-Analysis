@@ -1,4 +1,9 @@
 {
-  "version": 1,
-  "attached_datasets": []
+	"version": 1,
+	"attached_datasets": [
+		{
+			"id": "3766a754-c931-4ff7-9e7b-83ffb64e7ea8",
+			"mount": "omix-seurat-pseudobulk-sct-demo"
+		}
+	]
 }
