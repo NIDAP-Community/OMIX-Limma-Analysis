@@ -11,7 +11,10 @@ panel = json.loads(panel_text)
 
 assert panel["named_parameters"] is True
 assert "help_text" not in panel_text
-assert panel["datasets"] == []
+# Code Ocean removes an empty top-level datasets array when it normalizes the
+# App Panel. Attached data assets are recorded separately in datasets.json, so
+# an omitted key and an explicit empty array are equivalent here.
+assert panel.get("datasets", []) == []
 
 parameters = panel["parameters"]
 names = [parameter.get("param_name") for parameter in parameters]
@@ -52,9 +55,13 @@ expected_defaults = {
     "return_matrix": "true",
 }
 for name, default in expected_defaults.items():
-    assert by_name[name].get("default_value") == default, (
+    # Code Ocean omits empty-string defaults when it normalizes text fields.
+    # An omitted optional text default and an explicit empty default both map
+    # to the same blank CLI value.
+    actual = by_name[name].get("default_value", "" if default == "" else None)
+    assert actual == default, (
         name,
-        by_name[name].get("default_value"),
+        actual,
     )
 
 for name in ["matrix", "metadata", "pseudobulk_manifest"]:
