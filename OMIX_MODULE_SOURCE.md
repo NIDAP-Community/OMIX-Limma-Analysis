@@ -15,15 +15,15 @@
 
 | Field | Recorded value |
 | --- | --- |
-| Adapter version | **Pending** — baseline tag not yet established. |
-| Adapter release tag | **Pending** representative platform validation and explicit approval. |
-| Platform release | **Pending** explicit approval. Capsule `8635652` has passed representative validation but has not been released. |
+| Adapter version | `0.1.0` |
+| Adapter release tag | `v0.1.0`; finalized from the merged post-release evidence commit. |
+| Platform release | Code Ocean Standard Capsule release `1.0`: [`ffab7e89-72c4-4271-b888-b02a1e06db7c/tree/v1`](https://poc-nci.codeocean.io/capsule/ffab7e89-72c4-4271-b888-b02a1e06db7c/tree/v1), created 2026-10-04 from source capsule `8635652`. |
 | Canonical runtime profile | `r-statistics` |
 | Published OMIX runtime | `ghcr.io/nidap-community/omix-r-statistics@sha256:1325722877fec5167d171aa766ddf7bbfd056e4999bf40fd8c1eabee495da667` |
 | Runtime lockfile | `starter-environments/r-statistics/renv.lock`, SHA-256 `e86f6e0c2175bff1b4c1d73be67928fa9d808e78f325f407b3b7d278c1c71156` |
 | Adapter-selected base image | `codeocean/omix-r-statistics:r4.4.3-bioconductor3.20-v1` |
 | Code Ocean environment identity | Starter Environment `OMIX Statistics (1)`, selected and validated in capsule `8635652`; this platform identity is recorded separately from the public GHCR digest. |
-| Capsule run | `1132356` in capsule `8635652`, completed successfully on 2026-10-04 using an attached OMIX Seurat Pseudobulk SCT mean-expression result. |
+| Capsule run | Release-producing run `1134919` in capsule `8635652`, completed successfully on 2026-10-04 using an attached OMIX Seurat Pseudobulk SCT mean-expression result. |
 | Syncweaver mapping | `.syncweaver-lock.json` **Pending** generation by Syncweaver; the initial interim export and hash are recorded below. |
 
 The canonical source commit, adapter tag, public OCI digest, Code Ocean
@@ -32,7 +32,7 @@ environment, capsule run, and platform release are separate facts.
 ## Representative platform validation
 
 Code Ocean capsule [`8635652`](https://poc-nci.codeocean.io/capsule/8635652/tree)
-completed run `1132356` with the attached result asset
+completed release-producing run `1134919` with the attached result asset
 `OMIX Seurat Pseudobulk SCT Mean Demo`. The adapter discovered
 `SCT_Mean_Log2_Expression.csv`, `Pseudobulk_Sample_Metadata.csv`, and
 `Pseudobulk_Manifest.dcf` without explicit file selections. The validation used
@@ -48,7 +48,8 @@ variance model `ebayes_trend`. The run emitted the expected warning that zero
 sample variances were offset away from zero for this small demonstration input;
 it did not fail. This evidence validates the adapter handoff and manifest-based
 variance routing, not the biological interpretation of the demonstration
-contrast.
+contrast. The successful run produced Standard Capsule release
+[`1.0`](https://poc-nci.codeocean.io/capsule/ffab7e89-72c4-4271-b888-b02a1e06db7c/tree/v1).
 
 ## Exported scientific files
 
