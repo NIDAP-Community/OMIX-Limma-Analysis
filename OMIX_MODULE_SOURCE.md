@@ -17,17 +17,38 @@
 | --- | --- |
 | Adapter version | **Pending** — baseline tag not yet established. |
 | Adapter release tag | **Pending** representative platform validation and explicit approval. |
-| Platform release | **Pending** Code Ocean capsule creation, validation, and release approval. |
+| Platform release | **Pending** explicit approval. Capsule `8635652` has passed representative validation but has not been released. |
 | Canonical runtime profile | `r-statistics` |
 | Published OMIX runtime | `ghcr.io/nidap-community/omix-r-statistics@sha256:1325722877fec5167d171aa766ddf7bbfd056e4999bf40fd8c1eabee495da667` |
 | Runtime lockfile | `starter-environments/r-statistics/renv.lock`, SHA-256 `e86f6e0c2175bff1b4c1d73be67928fa9d808e78f325f407b3b7d278c1c71156` |
 | Adapter-selected base image | `codeocean/omix-r-statistics:r4.4.3-bioconductor3.20-v1` |
-| Code Ocean environment identity | **Pending** import and immutable resolution in Code Ocean; it is not inferred from the public GHCR digest. |
-| Capsule run | **Pending** representative Seurat Pseudobulk continuous-expression handoff. |
+| Code Ocean environment identity | Starter Environment `OMIX Statistics (1)`, selected and validated in capsule `8635652`; this platform identity is recorded separately from the public GHCR digest. |
+| Capsule run | `1132356` in capsule `8635652`, completed successfully on 2026-10-04 using an attached OMIX Seurat Pseudobulk SCT mean-expression result. |
 | Syncweaver mapping | `.syncweaver-lock.json` **Pending** generation by Syncweaver; the initial interim export and hash are recorded below. |
 
 The canonical source commit, adapter tag, public OCI digest, Code Ocean
 environment, capsule run, and platform release are separate facts.
+
+## Representative platform validation
+
+Code Ocean capsule [`8635652`](https://poc-nci.codeocean.io/capsule/8635652/tree)
+completed run `1132356` with the attached result asset
+`OMIX Seurat Pseudobulk SCT Mean Demo`. The adapter discovered
+`SCT_Mean_Log2_Expression.csv`, `Pseudobulk_Sample_Metadata.csv`, and
+`Pseudobulk_Manifest.dcf` without explicit file selections. The validation used
+metadata field `My_Variable_1` and contrast `M-F` because the five treatment
+labels in this small demonstration result each had only one sample and therefore
+did not provide replication for a treatment contrast.
+
+The run modeled 12,584 genes across five samples and wrote
+`Limma_Analysis.csv`, `Sample_Metadata.csv`, and `run_summary.txt`. The summary
+records pseudobulk matrix type `sctransform_mean_log2_expression`, requested
+variance model `auto`, manifest recommendation `ebayes_trend`, and resolved
+variance model `ebayes_trend`. The run emitted the expected warning that zero
+sample variances were offset away from zero for this small demonstration input;
+it did not fail. This evidence validates the adapter handoff and manifest-based
+variance routing, not the biological interpretation of the demonstration
+contrast.
 
 ## Exported scientific files
 
