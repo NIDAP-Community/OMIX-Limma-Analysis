@@ -60,8 +60,37 @@ stopifnot(
   any(grepl("manifest recommended variance model: ebayes_trend", summary_lines, fixed = TRUE)),
   any(grepl("variance model: ebayes_trend", summary_lines, fixed = TRUE)),
   any(grepl("model type: repeated_measures", summary_lines, fixed = TRUE)),
-  any(grepl("canonical module: OMIX-Limma-Analysis 0.1.1 (interface 1)", summary_lines, fixed = TRUE)),
-  any(grepl("canonical source: db70975167807d10634d5af33fc49828e32be633", summary_lines, fixed = TRUE))
+  any(grepl("requested contrasts: B-A", summary_lines, fixed = TRUE)),
+  any(grepl("resolved contrasts: B-A", summary_lines, fixed = TRUE)),
+  any(grepl("contrast source: explicit", summary_lines, fixed = TRUE)),
+  any(grepl("canonical module: OMIX-Limma-Analysis 0.1.2 (interface 2)", summary_lines, fixed = TRUE)),
+  any(grepl("canonical source: a25d57bcb75b0461648a60833f1957444a47ba28", summary_lines, fixed = TRUE))
+)
+
+# A blank contrast must infer the sole replicated two-group comparison and
+# record the decision rather than imposing a deployment-specific default.
+inferred_output_dir <- file.path(work_dir, "inferred-results")
+inferred_output <- system2(
+  file.path(R.home("bin"), "Rscript"),
+  c(
+    "code/main.R",
+    "--matrix", matrix_path,
+    "--metadata", metadata_path,
+    "--pseudobulk_manifest", manifest_path,
+    "--output_dir", inferred_output_dir
+  ),
+  stdout = TRUE,
+  stderr = TRUE
+)
+if (!is.null(attr(inferred_output, "status"))) {
+  stop("Inferred-contrast adapter command failed:\n", paste(inferred_output, collapse = "\n"))
+}
+inferred_summary <- readLines(file.path(inferred_output_dir, "run_summary.txt"))
+stopifnot(
+  any(grepl("requested contrasts: <blank>", inferred_summary, fixed = TRUE)),
+  any(grepl("resolved contrasts: B-A", inferred_summary, fixed = TRUE)),
+  any(grepl("contrast source: inferred", inferred_summary, fixed = TRUE)),
+  any(grepl("group replicate counts: A=3,B=3", inferred_summary, fixed = TRUE))
 )
 
 message("OMIX Limma Analysis pseudobulk workflow-handoff checks passed")
@@ -102,8 +131,29 @@ stopifnot(all(c(
 ) %in% names(numeric_results)))
 numeric_summary <- readLines(file.path(numeric_output_dir, "run_summary.txt"))
 stopifnot(
-  any(grepl("canonical module: OMIX-Limma-Analysis 0.1.1 (interface 1)", numeric_summary, fixed = TRUE)),
-  any(grepl("canonical source: db70975167807d10634d5af33fc49828e32be633", numeric_summary, fixed = TRUE))
+  any(grepl("canonical module: OMIX-Limma-Analysis 0.1.2 (interface 2)", numeric_summary, fixed = TRUE)),
+  any(grepl("canonical source: a25d57bcb75b0461648a60833f1957444a47ba28", numeric_summary, fixed = TRUE))
+)
+
+# Numeric-looking arithmetic is invalid when the modeled groups are not
+# numeric labels; this protects the App Panel from silently fitting nonsense.
+invalid_numeric_output <- system2(
+  file.path(R.home("bin"), "Rscript"),
+  c(
+    "code/main.R",
+    "--matrix", matrix_path,
+    "--metadata", metadata_path,
+    "--pseudobulk_manifest", manifest_path,
+    "--contrast_variable_columns", "Group",
+    "--contrasts", "1-0",
+    "--output_dir", file.path(work_dir, "invalid-numeric-results")
+  ),
+  stdout = TRUE,
+  stderr = TRUE
+)
+stopifnot(
+  identical(attr(invalid_numeric_output, "status"), 1L),
+  any(grepl("do not compare modeled group coefficients", invalid_numeric_output, fixed = TRUE))
 )
 
 message("OMIX Limma Analysis numeric-group workflow-handoff checks passed")

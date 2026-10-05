@@ -46,6 +46,7 @@ expected_defaults = {
     "gene_names_column": "GeneName",
     "sample_names_column": "Sample",
     "contrast_variable_columns": "Group",
+    "contrasts": "",
     "covariate_columns": "",
     "donor_variable_column": "",
     "input_kind": "log2_expression",
@@ -66,7 +67,7 @@ for name, default in expected_defaults.items():
 
 for name in ["matrix", "metadata", "pseudobulk_manifest"]:
     assert by_name[name]["type"] == "file"
-assert by_name["contrasts"]["required"] is True
+assert "required" not in by_name["contrasts"]
 assert "default_value" not in by_name["contrasts"]
 assert by_name["input_kind"]["extra_data"] == [
     "log2_expression",

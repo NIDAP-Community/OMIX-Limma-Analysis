@@ -4,6 +4,13 @@
 
 ### Changed
 
+- Synchronizes canonical OMIX Limma Analysis `0.1.2` (interface `2`) from
+  source commit `a25d57bcb75b0461648a60833f1957444a47ba28`.
+- Allows a blank contrast only for one unambiguous replicated two-group model,
+  records requested and resolved contrasts plus group replicate counts, and
+  rejects arithmetic expressions that do not compare modeled groups.
+- Makes the App Panel contrast optional without introducing a
+  deployment-specific biological default.
 - Synchronizes the byte-identical canonical OMIX Limma Analysis `0.1.1`
   implementation, adding support for numeric modeled-group labels and natural
   contrasts such as `1-0`.

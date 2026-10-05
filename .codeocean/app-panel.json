@@ -3,7 +3,7 @@
 	"named_parameters": true,
 	"general": {
 		"title": "OMIX Limma Analysis",
-		"instructions": "Fit limma models to a continuous feature-by-sample matrix and aligned sample metadata. Select files explicitly, or attach one upstream result bundle and leave the file selectors blank for unambiguous discovery.\n\nFor OMIX Seurat Pseudobulk, keep the continuous matrix, Pseudobulk_Sample_Metadata.csv, and Pseudobulk_Manifest.dcf together. The manifest selects eBayes for Harmony means or eBayes with trend for SCTransform means when Variance Model is auto. Raw-count pseudobulk is rejected and must be analyzed with OMIX DEG Analysis."
+		"instructions": "Fit limma models to a continuous feature-by-sample matrix and aligned sample metadata. Select files explicitly, or attach one upstream result bundle and leave the file selectors blank for unambiguous discovery.\n\nFor OMIX Seurat Pseudobulk, keep the continuous matrix, Pseudobulk_Sample_Metadata.csv, and Pseudobulk_Manifest.dcf together. The manifest selects eBayes for Harmony means or eBayes with trend for SCTransform means when Variance Model is auto. Raw-count pseudobulk is rejected and must be analyzed with OMIX DEG Analysis.\n\nContrasts may be left blank only when the selected model contains exactly two groups with at least two samples each. In that one unambiguous case, the comparison is inferred and recorded; otherwise provide the intended contrast explicitly."
 	},
 	"categories": [
 		{
@@ -90,10 +90,9 @@
 			"category": "model",
 			"name": "Contrasts",
 			"param_name": "contrasts",
-			"description": "Required comma-separated limma contrast expressions, such as B-A.",
+			"description": "Optional comma-separated limma contrast expressions, such as B-A or 1-0. Leave blank only when the selected model has exactly two groups with at least two samples each; the sole comparison will be inferred and recorded.",
 			"type": "text",
-			"value_type": "string",
-			"required": true
+			"value_type": "string"
 		},
 		{
 			"id": "covariate_columns",
