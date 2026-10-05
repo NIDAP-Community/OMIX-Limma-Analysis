@@ -22,7 +22,7 @@ option_list <- list(
   make_option("--sample_names_column", type = "character", default = "Sample"),
   make_option("--samples_to_include", type = "character", default = ""),
   make_option("--contrast_variable_columns", type = "character", default = "Group"),
-  make_option("--contrasts", type = "character", default = "", help = "Required comma-separated limma contrasts, such as B-A"),
+  make_option("--contrasts", type = "character", default = "", help = "Optional comma-separated limma contrasts; blank infers the only replicated two-group comparison"),
   make_option("--covariate_columns", type = "character", default = ""),
   make_option("--donor_variable_column", type = "character", default = ""),
   make_option("--summarization_method", type = "character", default = "mean", help = "mean, max, or sum"),
@@ -33,13 +33,12 @@ option_list <- list(
 )
 
 opt <- parse_args(OptionParser(
-  usage = "Usage: %prog --contrasts B-A [input selectors] [options]",
+  usage = "Usage: %prog [--contrasts B-A] [input selectors] [options]",
   option_list = option_list,
   description = "Code Ocean adapter for canonical OMIX Limma Analysis."
 ))
 
 contrasts <- omix_limma_split_csv(opt$contrasts)
-if (length(contrasts) == 0L) stop("--contrasts is required.", call. = FALSE)
 contrast_columns <- omix_limma_split_csv(opt$contrast_variable_columns)
 if (!length(contrast_columns) %in% c(1L, 2L)) {
   stop("--contrast_variable_columns must name one or two metadata columns.", call. = FALSE)
@@ -123,12 +122,15 @@ writeLines(c(
   paste("variance model:", run$variance_model),
   paste("model type:", run$model_type),
   paste("design formula:", run$design_formula),
-  paste("contrasts:", paste(contrasts, collapse = ", ")),
+  paste("requested contrasts:", if (length(run$requested_contrasts)) paste(run$requested_contrasts, collapse = ",") else "<blank>"),
+  paste("resolved contrasts:", paste(run$contrasts, collapse = ",")),
+  paste("contrast source:", run$contrast_source),
+  paste("group replicate counts:", paste0(names(run$group_replicate_counts), "=", as.integer(run$group_replicate_counts), collapse = ",")),
   paste("genes modelled:", run$genes_modelled),
   paste("samples modelled:", run$samples_modelled),
   paste("consensus donor correlation:", run$consensus_correlation),
-  "canonical module: OMIX-Limma-Analysis 0.1.1 (interface 1)",
-  "canonical source: db70975167807d10634d5af33fc49828e32be633",
+  "canonical module: OMIX-Limma-Analysis 0.1.2 (interface 2)",
+  "canonical source: a25d57bcb75b0461648a60833f1957444a47ba28",
   "runtime profile: r-statistics r4.4.3-bioconductor3.20-v1"
 ), file.path(output_dir, "run_summary.txt"))
 

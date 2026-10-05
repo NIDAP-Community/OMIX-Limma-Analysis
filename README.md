@@ -60,8 +60,11 @@ OMIX DEG Analysis.
 
 1. Attach an upstream Pseudobulk result or provide the continuous matrix and
    metadata files directly.
-2. Enter one or two contrast-variable columns and one or more comma-separated
-   Limma contrasts, such as `B-A` or `1-0` when the modeled groups are numeric.
+2. Enter one or two contrast-variable columns. Supply one or more
+   comma-separated Limma contrasts, such as `B-A` or `1-0` when the modeled
+   groups are numeric, or leave the field blank only when the selected model
+   has exactly two groups with at least two samples each. In that one
+   unambiguous case, the capsule infers and records the sole comparison.
 3. Add covariates only when scientifically justified. Add a donor variable
    only when a donor contributes repeated modeled profiles.
 4. Confirm the input kind and variance model. Keep `auto` for a compatible
@@ -101,11 +104,14 @@ the Code Ocean run or release identity with scientific results.
 | `raw_integer_counts` | Run the bundle with OMIX DEG Analysis instead. |
 | No metadata IDs match matrix columns | Check sample naming and the Sample ID Column setting. |
 | Donor has no repeated profiles | Leave Donor Variable Column blank for an ordinary linear model. |
-| Contrast is not estimable | Confirm group labels, contrast spelling, and confounded covariates. |
+| Blank contrast is ambiguous | Select a replicated model variable and provide the intended contrast. The error lists group replicate counts. |
+| Contrast is not estimable | Confirm group labels, contrast spelling, replicate counts, and confounded covariates. |
 
 Numeric group labels such as `0` and `1` are supported directly. Enter the
 natural contrast `1-0`; the adapter preserves that label in its result columns
-while the canonical module uses valid internal R design names.
+while the canonical module uses valid internal R design names. `1-0` is
+rejected when `1` and `0` are not actual modeled groups, so ordinary arithmetic
+cannot silently become a biological contrast.
 
 ## For developers
 
