@@ -63,3 +63,40 @@ stopifnot(
 )
 
 message("OMIX Limma Analysis pseudobulk workflow-handoff checks passed")
+
+# Seurat metadata commonly encodes biological groups as numeric cluster-like
+# values. The canonical module maps those values to valid internal design
+# names while preserving the natural requested contrast in result columns.
+numeric_metadata_path <- file.path(work_dir, "Numeric_Pseudobulk_Sample_Metadata.csv")
+numeric_output_dir <- file.path(work_dir, "numeric-results")
+utils::write.csv(
+  transform(metadata, Group = ifelse(Group == "A", "0", "1")),
+  numeric_metadata_path,
+  row.names = FALSE
+)
+numeric_output <- system2(
+  file.path(R.home("bin"), "Rscript"),
+  c(
+    "code/main.R",
+    "--matrix", matrix_path,
+    "--metadata", numeric_metadata_path,
+    "--pseudobulk_manifest", manifest_path,
+    "--contrast_variable_columns", "Group",
+    "--contrasts", "1-0",
+    "--output_dir", numeric_output_dir
+  ),
+  stdout = TRUE,
+  stderr = TRUE
+)
+if (!is.null(attr(numeric_output, "status"))) {
+  stop("Numeric-group adapter command failed:\n", paste(numeric_output, collapse = "\n"))
+}
+numeric_results <- utils::read.csv(
+  file.path(numeric_output_dir, "Limma_Analysis.csv"),
+  check.names = FALSE
+)
+stopifnot(all(c(
+  "0_Mean", "1_Mean", "1-0_FC", "1-0_logFC", "1-0_pval", "1-0_adjpval"
+) %in% names(numeric_results)))
+
+message("OMIX Limma Analysis numeric-group workflow-handoff checks passed")

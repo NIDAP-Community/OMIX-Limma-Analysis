@@ -4,11 +4,11 @@
 
 - **Module:** [OMIX Limma Analysis](https://github.com/NIDAP-Community/OMIX/tree/main/modules/OMIX-Limma-Analysis)
 - **Canonical path:** `modules/OMIX-Limma-Analysis/`
-- **Canonical module version:** `0.1.0`
+- **Canonical module version:** `0.1.1`
 - **Canonical interface version:** `1`
 - **Canonical release tag:** **Pending** — no validated namespaced module tag is established.
-- **Canonical source reference:** [`5396be0203b94fc1e22cb2eaf74d8265a32466a7`](https://github.com/NIDAP-Community/OMIX/commit/5396be0203b94fc1e22cb2eaf74d8265a32466a7)
-- **Interface schema:** [schemas/interface.yml](https://github.com/NIDAP-Community/OMIX/blob/5396be0203b94fc1e22cb2eaf74d8265a32466a7/modules/OMIX-Limma-Analysis/schemas/interface.yml)
+- **Canonical source reference:** [`db70975167807d10634d5af33fc49828e32be633`](https://github.com/NIDAP-Community/OMIX/commit/db70975167807d10634d5af33fc49828e32be633)
+- **Interface schema:** [schemas/interface.yml](https://github.com/NIDAP-Community/OMIX/blob/db70975167807d10634d5af33fc49828e32be633/modules/OMIX-Limma-Analysis/schemas/interface.yml)
 - **Module contract:** [OMIX module contract](https://github.com/NIDAP-Community/OMIX/blob/main/docs/module-contract.md)
 
 ## Adapter release record
@@ -55,7 +55,7 @@ contrast. The successful run produced Standard Capsule release
 
 | Canonical file | Adapter copy | SHA-256 | Purpose |
 | --- | --- | --- | --- |
-| `R/OMIX_Limma_Analysis.R` | `code/functions/OMIX_Limma_Analysis.R` | `4a389f09c14c849ec1bb7182cce7f82aad3171f2b51f20ea489fa72106abdc20` | Canonical Limma model and result construction. |
+| `R/OMIX_Limma_Analysis.R` | `code/functions/OMIX_Limma_Analysis.R` | `446d1eab1f9f10d28f1b5f7f35281c6c694d206ddd5554b0ccdb6a377a87f30a` | Canonical Limma model and result construction. |
 
 The complete canonical `R/` tree contains this one file at the recorded source
 commit. The adapter copy is byte-identical; no scientific edit was applied.
