@@ -9,6 +9,9 @@
   contrasts such as `1-0`.
 - Adds adapter workflow-handoff regression coverage for numeric `0`/`1`
   groups without changing Code Ocean input discovery, runtime, or outputs.
+- Updates adapter-owned run-summary provenance to canonical module `0.1.1`
+  and source commit `db70975167807d10634d5af33fc49828e32be633`, with regression
+  assertions that prevent source and summary records from drifting.
 
 ## 0.1.0 - 2026-10-04
 
