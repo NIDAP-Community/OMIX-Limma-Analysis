@@ -2,6 +2,14 @@
 
 ## Unreleased
 
+### Changed
+
+- Synchronizes the byte-identical canonical OMIX Limma Analysis `0.1.1`
+  implementation, adding support for numeric modeled-group labels and natural
+  contrasts such as `1-0`.
+- Adds adapter workflow-handoff regression coverage for numeric `0`/`1`
+  groups without changing Code Ocean input discovery, runtime, or outputs.
+
 ## 0.1.0 - 2026-10-04
 
 ### Added

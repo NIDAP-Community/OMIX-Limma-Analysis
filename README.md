@@ -61,7 +61,7 @@ OMIX DEG Analysis.
 1. Attach an upstream Pseudobulk result or provide the continuous matrix and
    metadata files directly.
 2. Enter one or two contrast-variable columns and one or more comma-separated
-   Limma contrasts, such as `B-A`.
+   Limma contrasts, such as `B-A` or `1-0` when the modeled groups are numeric.
 3. Add covariates only when scientifically justified. Add a donor variable
    only when a donor contributes repeated modeled profiles.
 4. Confirm the input kind and variance model. Keep `auto` for a compatible
@@ -102,6 +102,10 @@ the Code Ocean run or release identity with scientific results.
 | No metadata IDs match matrix columns | Check sample naming and the Sample ID Column setting. |
 | Donor has no repeated profiles | Leave Donor Variable Column blank for an ordinary linear model. |
 | Contrast is not estimable | Confirm group labels, contrast spelling, and confounded covariates. |
+
+Numeric group labels such as `0` and `1` are supported directly. Enter the
+natural contrast `1-0`; the adapter preserves that label in its result columns
+while the canonical module uses valid internal R design names.
 
 ## For developers
 
