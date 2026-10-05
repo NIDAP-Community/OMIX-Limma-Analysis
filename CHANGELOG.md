@@ -13,6 +13,16 @@
   and source commit `db70975167807d10634d5af33fc49828e32be633`, with regression
   assertions that prevent source and summary records from drifting.
 
+### Validated
+
+- Code Ocean run `1216757` exercised the Harmony mean-expression handoff with
+  numeric contrast `1-0`, resolved `variance_model = auto` to `ebayes`, and
+  recorded the corrected canonical `0.1.1` provenance.
+- Comparison against the exact published `r-statistics` image digest found
+  identical structure, ordering, rankings, significance classifications, and
+  metadata. The largest numeric difference was `1.07e-14`; repeated local
+  container runs were byte-identical.
+
 ## 0.1.0 - 2026-10-04
 
 ### Added
