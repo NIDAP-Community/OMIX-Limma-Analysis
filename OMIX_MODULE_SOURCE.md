@@ -51,6 +51,33 @@ variance routing, not the biological interpretation of the demonstration
 contrast. The successful run produced Standard Capsule release
 [`1.0`](https://poc-nci.codeocean.io/capsule/ffab7e89-72c4-4271-b888-b02a1e06db7c/tree/v1).
 
+### Version 0.1.1 pre-release equivalence validation
+
+Code Ocean run `1216757` in source capsule
+[`8635652`](https://poc-nci.codeocean.io/capsule/8635652/tree) validated the
+canonical `0.1.1` numeric-group-label behavior with the OMIX Seurat Pseudobulk
+Harmony handoff. The run used `Harmony_Mean_Expression.csv`,
+`Pseudobulk_Sample_Metadata.csv`, and `Pseudobulk_Manifest.dcf`; modeled
+metadata field `Group`; requested contrast `1-0`; and resolved
+`variance_model = auto` to `ebayes`. It modeled 200 genes across five samples
+and completed successfully. The run summary records canonical source
+`db70975167807d10634d5af33fc49828e32be633` and module version `0.1.1`
+(interface `1`).
+
+The Code Ocean results were compared with a local run of the exact published
+runtime image
+`ghcr.io/nidap-community/omix-r-statistics@sha256:1325722877fec5167d171aa766ddf7bbfd056e4999bf40fd8c1eabee495da667`
+using the same inputs, canonical source, and parameters. Both outputs contained
+the same 200 genes and 16 columns with identical names, gene order, statistical
+rankings, nominal and adjusted significance classifications, and byte-identical
+`Sample_Metadata.csv`. The maximum absolute numeric difference across 3,000
+values was `1.07e-14`; no scientific result changed. Two repeated local
+container runs produced byte-identical outputs. The small cross-host difference
+is within floating-point tolerance for the Code Ocean host versus local Docker
+x86 emulation on Apple ARM hardware. Full commands, checksums, and acceptance
+criteria are recorded in
+[`validation/limma-0.1.1-equivalence.md`](validation/limma-0.1.1-equivalence.md).
+
 ## Exported scientific files
 
 | Canonical file | Adapter copy | SHA-256 | Purpose |
