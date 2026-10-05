@@ -59,7 +59,9 @@ stopifnot(
   any(grepl("requested variance model: auto", summary_lines, fixed = TRUE)),
   any(grepl("manifest recommended variance model: ebayes_trend", summary_lines, fixed = TRUE)),
   any(grepl("variance model: ebayes_trend", summary_lines, fixed = TRUE)),
-  any(grepl("model type: repeated_measures", summary_lines, fixed = TRUE))
+  any(grepl("model type: repeated_measures", summary_lines, fixed = TRUE)),
+  any(grepl("canonical module: OMIX-Limma-Analysis 0.1.1 (interface 1)", summary_lines, fixed = TRUE)),
+  any(grepl("canonical source: db70975167807d10634d5af33fc49828e32be633", summary_lines, fixed = TRUE))
 )
 
 message("OMIX Limma Analysis pseudobulk workflow-handoff checks passed")
@@ -98,5 +100,10 @@ numeric_results <- utils::read.csv(
 stopifnot(all(c(
   "0_Mean", "1_Mean", "1-0_FC", "1-0_logFC", "1-0_pval", "1-0_adjpval"
 ) %in% names(numeric_results)))
+numeric_summary <- readLines(file.path(numeric_output_dir, "run_summary.txt"))
+stopifnot(
+  any(grepl("canonical module: OMIX-Limma-Analysis 0.1.1 (interface 1)", numeric_summary, fixed = TRUE)),
+  any(grepl("canonical source: db70975167807d10634d5af33fc49828e32be633", numeric_summary, fixed = TRUE))
+)
 
 message("OMIX Limma Analysis numeric-group workflow-handoff checks passed")

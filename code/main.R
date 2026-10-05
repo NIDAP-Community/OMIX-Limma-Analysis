@@ -127,8 +127,8 @@ writeLines(c(
   paste("genes modelled:", run$genes_modelled),
   paste("samples modelled:", run$samples_modelled),
   paste("consensus donor correlation:", run$consensus_correlation),
-  "canonical module: OMIX-Limma-Analysis 0.1.0 (interface 1)",
-  "canonical source: 5396be0203b94fc1e22cb2eaf74d8265a32466a7",
+  "canonical module: OMIX-Limma-Analysis 0.1.1 (interface 1)",
+  "canonical source: db70975167807d10634d5af33fc49828e32be633",
   "runtime profile: r-statistics r4.4.3-bioconductor3.20-v1"
 ), file.path(output_dir, "run_summary.txt"))
 
