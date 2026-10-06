@@ -22,6 +22,12 @@
 
 ### Validated
 
+- Code Ocean release-producing run `1244387` validated canonical `0.1.2`
+  blank-contrast inference for one unambiguous replicated two-group model and
+  produced Standard Capsule release `2.0`.
+- Upstream OMIX GSVA run `1254366` and Limma handoff run `1254876` validated
+  the complete enrichment-score workflow with ordered contrasts `B-A,C-A,C-B`,
+  50 pathway features, nine samples, and `variance_model = ebayes`.
 - Code Ocean run `1216757` exercised the Harmony mean-expression handoff with
   numeric contrast `1-0`, resolved `variance_model = auto` to `ebayes`, and
   recorded the corrected canonical `0.1.1` provenance.

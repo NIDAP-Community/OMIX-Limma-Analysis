@@ -15,19 +15,54 @@
 
 | Field | Recorded value |
 | --- | --- |
-| Adapter version | `0.1.0` |
-| Adapter release tag | `v0.1.0`; finalized from the merged post-release evidence commit. |
-| Platform release | Code Ocean Standard Capsule release `1.0`: [`ffab7e89-72c4-4271-b888-b02a1e06db7c/tree/v1`](https://poc-nci.codeocean.io/capsule/ffab7e89-72c4-4271-b888-b02a1e06db7c/tree/v1), created 2026-10-04 from source capsule `8635652`. |
+| Adapter version | `0.1.2` |
+| Adapter release tag | Proposed annotated tag `v0.1.2` targeting validated adapter commit `ed6d3cb058c9618dd18f14d9eaad4192e178bac7`; pending owner approval and creation. Existing tag `v0.1.0` remains unchanged as a historical provenance record. |
+| Platform release | Code Ocean Standard Capsule release `2.0`: [`ffab7e89-72c4-4271-b888-b02a1e06db7c/tree/v2`](https://poc-nci.codeocean.io/capsule/ffab7e89-72c4-4271-b888-b02a1e06db7c/tree/v2), created 2026-10-05 from source capsule `8635652` at adapter commit `ed6d3cb058c9618dd18f14d9eaad4192e178bac7`. |
 | Canonical runtime profile | `r-statistics` |
 | Published OMIX runtime | `ghcr.io/nidap-community/omix-r-statistics@sha256:1325722877fec5167d171aa766ddf7bbfd056e4999bf40fd8c1eabee495da667` |
 | Runtime lockfile | `starter-environments/r-statistics/renv.lock`, SHA-256 `e86f6e0c2175bff1b4c1d73be67928fa9d808e78f325f407b3b7d278c1c71156` |
 | Adapter-selected base image | `codeocean/omix-r-statistics:r4.4.3-bioconductor3.20-v1` |
 | Code Ocean environment identity | Starter Environment `OMIX Statistics (1)`, selected and validated in capsule `8635652`; this platform identity is recorded separately from the public GHCR digest. |
-| Capsule run | Release-producing run `1134919` in capsule `8635652`, completed successfully on 2026-10-04 using an attached OMIX Seurat Pseudobulk SCT mean-expression result. |
+| Capsule run | Release-producing run `1244387` and GSVA workflow-handoff run `1254876` in capsule `8635652`, completed successfully on 2026-10-05. |
 | Syncweaver mapping | `.syncweaver-lock.json` **Pending** generation by Syncweaver; the initial interim export and hash are recorded below. |
 
 The canonical source commit, adapter tag, public OCI digest, Code Ocean
 environment, capsule run, and platform release are separate facts.
+
+### Version 0.1.2 release validation
+
+Release-producing Code Ocean run `1244387` in source capsule
+[`8635652`](https://poc-nci.codeocean.io/capsule/8635652/tree) validated the
+safe blank-contrast behavior introduced by canonical OMIX Limma Analysis
+`0.1.2`. With exactly one unambiguous replicated two-group comparison, the
+adapter left the requested contrast blank and canonical OMIX resolved `1-0`
+with `contrast_source = inferred` and group replicate counts `0=2,1=3`. The
+run modeled 12,584 genes across five samples, treated the input as
+`log2_expression`, and resolved `variance_model = auto` to `ebayes_trend`.
+Its run summary records canonical source
+`a25d57bcb75b0461648a60833f1957444a47ba28`, module version `0.1.2`, and
+interface version `2`. This run produced Standard Capsule release
+[`2.0`](https://poc-nci.codeocean.io/capsule/ffab7e89-72c4-4271-b888-b02a1e06db7c/tree/v2).
+
+### GSVA enrichment-score workflow handoff
+
+Upstream OMIX GSVA run `1254366` in capsule
+[`3631910`](https://poc-nci.codeocean.io/capsule/3631910/tree) produced 50
+mouse Hallmark enrichment-score features across nine samples. The result was
+captured as data asset `OMIX GSVA Mouse Hallmark Scores for Limma` and attached
+to the Limma capsule together with the metadata-only asset
+`deg-training-metadata`.
+
+Code Ocean Limma run `1254876` then consumed
+`/data/omix-gsva-mouse-hallmark-limma/gsva_results.csv` and
+`/data/deg-training-metadata/metadata_ccbr_bulk_training.csv`. It modeled
+`Group`, explicitly and in order evaluated `B-A,C-A,C-B`, recorded replicate
+counts `A=3,B=3,C=3`, classified the input as `enrichment_score`, and used the
+requested `ebayes` variance model. The successful run modeled 50 features
+across nine samples and wrote `Limma_Analysis.csv`, `Sample_Metadata.csv`, and
+`run_summary.txt`. This validates the GSVA-to-Limma deployment handoff without
+introducing adapter-specific scientific behavior. Complete evidence is in
+[`validation/limma-0.1.2-platform-evidence.md`](validation/limma-0.1.2-platform-evidence.md).
 
 ## Representative platform validation
 
