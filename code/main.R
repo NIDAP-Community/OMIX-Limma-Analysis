@@ -26,7 +26,11 @@ option_list <- list(
   make_option("--covariate_columns", type = "character", default = ""),
   make_option("--donor_variable_column", type = "character", default = ""),
   make_option("--summarization_method", type = "character", default = "mean", help = "mean, max, or sum"),
-  make_option("--input_kind", type = "character", default = "log2_expression", help = "log2_expression, enrichment_score, or continuous_score"),
+  make_option("--input_data_type", type = "character", default = "auto", help = "Scientific matrix type or auto; see the canonical interface schema"),
+  make_option("--input_kind", type = "character", default = "auto", help = "auto, log2_expression, enrichment_score, or continuous_score"),
+  make_option("--measurement_scale", type = "character", default = "", help = "Required description for other_continuous inputs"),
+  make_option("--fraction_transform", type = "character", default = "auto", help = "auto, none, arcsin_sqrt, or logit"),
+  make_option("--fraction_pseudocount", type = "double", default = 1e-04, help = "Boundary value used only for an explicit logit fraction transform"),
   make_option("--variance_model", type = "character", default = "auto", help = "auto, ebayes, or ebayes_trend"),
   make_option("--return_matrix", type = "character", default = "true", help = "true or false"),
   make_option("--output_dir", type = "character", default = "", help = "Platform-managed output directory; defaults to /results")
@@ -46,20 +50,33 @@ if (!length(contrast_columns) %in% c(1L, 2L)) {
 if (!opt$summarization_method %in% c("mean", "max", "sum")) {
   stop("--summarization_method must be mean, max, or sum.", call. = FALSE)
 }
-if (!opt$input_kind %in% c("log2_expression", "enrichment_score", "continuous_score")) {
-  stop("--input_kind must be log2_expression, enrichment_score, or continuous_score.", call. = FALSE)
-}
-
 resolved <- omix_limma_resolve_inputs(
   matrix = opt$matrix,
   metadata = opt$metadata,
   pseudobulk_manifest = opt$pseudobulk_manifest,
   gene_names_column = opt$gene_names_column,
   sample_names_column = opt$sample_names_column,
-  input_kind = opt$input_kind,
   code_dir = code_dir
 )
-variance <- omix_limma_resolve_variance_model(opt$variance_model, resolved$manifest)
+input_contract <- omix_limma_resolve_input_contract(
+  input_data_type = opt$input_data_type,
+  input_kind = opt$input_kind,
+  variance_model = opt$variance_model,
+  fraction_transform = opt$fraction_transform,
+  manifest_matrix_type = omix_limma_manifest_value(resolved$manifest, "matrix_type"),
+  manifest_recommended_variance_model = omix_limma_manifest_value(
+    resolved$manifest,
+    "recommended_variance_model"
+  )
+)
+declared_input_kind <- omix_limma_manifest_value(resolved$manifest, "downstream_input_kind")
+if (nzchar(declared_input_kind) && !identical(declared_input_kind, input_contract$input_kind)) {
+  stop(
+    "Resolved input_kind ('", input_contract$input_kind,
+    "') does not match the pseudobulk manifest ('", declared_input_kind, "').",
+    call. = FALSE
+  )
+}
 
 selected_samples <- omix_limma_split_csv(opt$samples_to_include)
 if (length(selected_samples) == 0L) {
@@ -87,8 +104,12 @@ results <- omix_limma_analysis(
   donor_variable_column = omix_limma_split_csv(opt$donor_variable_column),
   summarization_method = opt$summarization_method,
   return_matrix = omix_limma_as_logical(opt$return_matrix, "return_matrix"),
-  input_kind = opt$input_kind,
-  variance_model = variance$resolved
+  input_kind = input_contract$input_kind,
+  variance_model = input_contract$variance_model,
+  input_data_type = input_contract$input_data_type,
+  measurement_scale = opt$measurement_scale,
+  fraction_transform = input_contract$fraction_transform,
+  fraction_pseudocount = opt$fraction_pseudocount
 )
 
 utils::write.csv(
@@ -110,15 +131,53 @@ utils::write.csv(
 )
 
 run <- attr(results, "omix_limma_run")
+variance_diagnostic <- attr(results, "omix_limma_variance_diagnostic")
+utils::write.csv(
+  variance_diagnostic,
+  file.path(output_dir, "Variance_Diagnostic.csv"),
+  row.names = FALSE,
+  na = ""
+)
+grDevices::png(
+  file.path(output_dir, "variance_diagnostic.png"),
+  width = 1400,
+  height = 1000,
+  res = 160
+)
+graphics::plot(
+  variance_diagnostic$Average_Signal,
+  variance_diagnostic$Residual_SD,
+  pch = 16,
+  col = grDevices::adjustcolor("#2C7FB8", alpha.f = 0.55),
+  xlab = "Average feature signal",
+  ylab = "Residual standard deviation",
+  main = "Residual variance diagnostic"
+)
+if (nrow(variance_diagnostic) >= 5L && length(unique(variance_diagnostic$Average_Signal)) >= 5L) {
+  variance_trend <- stats::lowess(
+    variance_diagnostic$Average_Signal,
+    variance_diagnostic$Residual_SD
+  )
+  graphics::lines(variance_trend, col = "#D7301F", lwd = 3)
+}
+grDevices::dev.off()
 writeLines(c(
   "OMIX Limma Analysis run summary",
   paste("matrix input:", resolved$matrix_path),
   paste("metadata input:", resolved$metadata_path),
   paste("pseudobulk manifest:", if (nzchar(resolved$manifest_path)) resolved$manifest_path else "<none>"),
   paste("pseudobulk matrix type:", if (is.null(resolved$manifest)) "<none>" else omix_limma_manifest_value(resolved$manifest, "matrix_type")),
+  paste("requested input data type:", input_contract$requested_input_data_type),
+  paste("input data type:", run$input_data_type),
+  paste("input data type source:", input_contract$input_data_type_source),
   paste("input kind:", run$input_kind),
-  paste("requested variance model:", variance$requested),
-  paste("manifest recommended variance model:", if (nzchar(variance$recommended)) variance$recommended else "<none>"),
+  paste("measurement scale:", if (nzchar(run$measurement_scale)) run$measurement_scale else "<not supplied>"),
+  paste("requested fraction transform:", input_contract$requested_fraction_transform),
+  paste("fraction transform:", run$fraction_transform),
+  paste("fraction pseudocount:", if (is.na(run$fraction_pseudocount)) "<not used>" else run$fraction_pseudocount),
+  paste("requested variance model:", input_contract$requested_variance_model),
+  paste("recommended variance model:", if (is.na(input_contract$recommended_variance_model)) "<none>" else input_contract$recommended_variance_model),
+  paste("variance model source:", input_contract$variance_model_source),
   paste("variance model:", run$variance_model),
   paste("model type:", run$model_type),
   paste("design formula:", run$design_formula),
@@ -129,8 +188,8 @@ writeLines(c(
   paste("genes modelled:", run$genes_modelled),
   paste("samples modelled:", run$samples_modelled),
   paste("consensus donor correlation:", run$consensus_correlation),
-  "canonical module: OMIX-Limma-Analysis 0.1.2 (interface 2)",
-  "canonical source: a25d57bcb75b0461648a60833f1957444a47ba28",
+  "canonical module: OMIX-Limma-Analysis 1.0.0 (interface 3)",
+  "canonical source: 296a77d141af59ab813439d44148b5ce5e100e11",
   "runtime profile: r-statistics r4.4.3-bioconductor3.20-v1"
 ), file.path(output_dir, "run_summary.txt"))
 

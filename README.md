@@ -19,18 +19,24 @@ parameter translation, result placement, runtime selection, and adapter tests.
 
 ## Main uses
 
-Use this capsule for continuous matrices such as:
+Use this capsule for declared continuous matrices such as:
 
 - donor-level means from corrected `SCT/data` expression;
 - donor-level means from a declared corrected expression assay such as
   `Harmony/data`;
 - GSVA or ssGSEA enrichment scores; or
-- another continuous feature score with aligned biological replicates.
+- CIBERSORT relative fractions or absolute scores;
+- normalized microarray, bulk-expression, proteomics, metabolomics,
+  methylation M-value, chromatin-accessibility, CRISPR-score, qPCR delta-Ct,
+  or copy-number log2-ratio matrices; or
+- another documented continuous feature score with aligned biological
+  replicates.
 
 Do not use it for raw RNA counts. Raw-count pseudobulk must be analyzed with
 OMIX DEG Analysis so that library normalization and voom precision weights are
-applied. Do not use untransformed cell fractions or other proportions without
-a documented transformation.
+applied. CIBERSORT relative fractions are supported through the declared
+fraction input type and transformation controls; do not pass other proportions
+as generic continuous scores without a justified transformation.
 
 ## Inputs
 
@@ -67,13 +73,24 @@ OMIX DEG Analysis.
    unambiguous case, the capsule infers and records the sole comparison.
 3. Add covariates only when scientifically justified. Add a donor variable
    only when a donor contributes repeated modeled profiles.
-4. Confirm the input kind and variance model. Keep `auto` for a compatible
-   Pseudobulk manifest.
-5. Run the capsule.
+4. Select the scientific **Input Data Type**, or keep `auto` only when a
+   compatible Pseudobulk manifest or backward-compatible Input Kind supplies
+   the declaration. The program never guesses SCT, Harmony, GSVA, or another
+   assay type from numeric values alone.
+5. Keep **Variance Model** at `auto` to use the documented default for the
+   declared data type, or select an explicit model after reviewing the
+   variance diagnostic. `other_continuous` requires both an explicit variance
+   model and a Measurement Scale description.
+6. For CIBERSORT relative fractions, `auto` uses an arcsine-square-root
+   transform. An explicit logit transform uses the Fraction Pseudocount at
+   zero and one boundaries.
+7. Run the capsule.
 
-`input_kind` controls effect-size naming. Log2 expression returns signed `FC`
-and `logFC` columns; enrichment and continuous scores return `effect` in the
-input units.
+`input_kind` controls effect-size naming and normally remains `auto`. Log2
+expression returns signed `FC` and `logFC` columns; enrichment and continuous
+scores return `effect` in the input units. See the
+[canonical module guide](https://github.com/NIDAP-Community/OMIX/tree/main/modules/OMIX-Limma-Analysis)
+for the variance-model recommendation for every supported data type.
 
 ## Outputs
 
@@ -82,6 +99,8 @@ input units.
 | `Limma_Analysis.csv` | Contrast statistics and, by default, the aligned modeled matrix. |
 | `Sample_Metadata.csv` | Metadata in modeled sample order. |
 | `run_summary.txt` | Resolved inputs, variance model, design, contrasts, donor correlation, source, and runtime provenance. |
+| `Variance_Diagnostic.csv` | Per-feature average signal and pre-moderation residual standard deviation. |
+| `variance_diagnostic.png` | Visual check for a remaining mean-variance trend. |
 
 ## Environment and reproducibility
 

@@ -1,4 +1,5 @@
 source(file.path("code", "adapter", "Limma_Adapter.R"))
+source(file.path("code", "functions", "OMIX_Limma_Analysis.R"))
 
 root <- tempfile("omix-limma-inputs-")
 dir.create(file.path(root, "bundle"), recursive = TRUE)
@@ -41,7 +42,16 @@ stopifnot(
   identical(resolved$metadata_path, normalizePath(metadata_path)),
   identical(resolved$manifest_path, normalizePath(manifest_path)),
   identical(
-    omix_limma_resolve_variance_model("auto", resolved$manifest)$resolved,
+    omix_limma_resolve_input_contract(
+      input_data_type = "auto",
+      input_kind = "auto",
+      variance_model = "auto",
+      manifest_matrix_type = omix_limma_manifest_value(resolved$manifest, "matrix_type"),
+      manifest_recommended_variance_model = omix_limma_manifest_value(
+        resolved$manifest,
+        "recommended_variance_model"
+      )
+    )$variance_model,
     "ebayes_trend"
   )
 )

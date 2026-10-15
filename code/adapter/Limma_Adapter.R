@@ -149,8 +149,8 @@ omix_limma_resolve_manifest <- function(requested, code_dir) {
       include.dirs = FALSE
     )
   }), use.names = FALSE)
-  candidates <- sort(unique(normalizePath(candidates, mustWork = TRUE)))
   if (length(candidates) == 0L) return("")
+  candidates <- sort(unique(normalizePath(candidates, mustWork = TRUE)))
   if (length(candidates) > 1L) {
     stop(
       "Multiple Pseudobulk manifest candidates were found. Select one explicitly:\n- ",
@@ -161,7 +161,7 @@ omix_limma_resolve_manifest <- function(requested, code_dir) {
   candidates[[1L]]
 }
 
-omix_limma_validate_manifest <- function(manifest, input_kind) {
+omix_limma_validate_manifest <- function(manifest) {
   if (is.null(manifest)) return(invisible(NULL))
   matrix_type <- omix_limma_manifest_value(manifest, "matrix_type")
   if (identical(matrix_type, "raw_integer_counts")) {
@@ -186,13 +186,6 @@ omix_limma_validate_manifest <- function(manifest, input_kind) {
   if (nzchar(downstream_mode) && !identical(downstream_mode, "continuous_expression")) {
     stop("Pseudobulk manifest does not declare a continuous-expression handoff.", call. = FALSE)
   }
-  declared_input_kind <- omix_limma_manifest_value(manifest, "downstream_input_kind")
-  if (nzchar(declared_input_kind) && !identical(declared_input_kind, input_kind)) {
-    stop(
-      "--input_kind ('", input_kind, "') does not match the pseudobulk manifest ('",
-      declared_input_kind, "').", call. = FALSE
-    )
-  }
   invisible(NULL)
 }
 
@@ -202,12 +195,11 @@ omix_limma_resolve_inputs <- function(
   pseudobulk_manifest = "",
   gene_names_column = "GeneName",
   sample_names_column = "Sample",
-  input_kind = "log2_expression",
   code_dir = getwd()
 ) {
   manifest_path <- omix_limma_resolve_manifest(pseudobulk_manifest, code_dir)
   manifest <- if (nzchar(manifest_path)) omix_limma_read_manifest(manifest_path) else NULL
-  omix_limma_validate_manifest(manifest, input_kind)
+  omix_limma_validate_manifest(manifest)
 
   table_files <- omix_limma_candidate_files(code_dir)
 
@@ -286,18 +278,4 @@ omix_limma_resolve_inputs <- function(
     matrix = matrix_table,
     metadata = metadata_table
   )
-}
-
-omix_limma_resolve_variance_model <- function(requested, manifest) {
-  requested <- tolower(trimws(requested))
-  if (!requested %in% c("auto", "ebayes", "ebayes_trend")) {
-    stop("--variance_model must be auto, ebayes, or ebayes_trend.", call. = FALSE)
-  }
-  recommended <- omix_limma_manifest_value(manifest, "recommended_variance_model")
-  resolved <- if (identical(requested, "auto")) {
-    if (recommended %in% c("ebayes", "ebayes_trend")) recommended else "ebayes"
-  } else {
-    requested
-  }
-  list(requested = requested, recommended = recommended, resolved = resolved)
 }

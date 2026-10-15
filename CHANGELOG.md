@@ -4,6 +4,14 @@
 
 ### Changed
 
+- Synchronizes canonical OMIX Limma Analysis `1.0.0` (interface `3`) from
+  source commit `296a77d141af59ab813439d44148b5ce5e100e11`.
+- Exposes the canonical `input_data_type`, `input_kind`, `measurement_scale`,
+  CIBERSORT fraction-transform, fraction-pseudocount, and variance-model
+  controls without adapter-specific scientific defaults.
+- Adds `Variance_Diagnostic.csv` and `variance_diagnostic.png` to the stable
+  deployment outputs and records resolved type, transform, and variance-model
+  provenance in `run_summary.txt`.
 - Synchronizes canonical OMIX Limma Analysis `0.1.2` (interface `2`) from
   source commit `a25d57bcb75b0461648a60833f1957444a47ba28`.
 - Allows a blank contrast only for one unambiguous replicated two-group model,

@@ -4,19 +4,19 @@
 
 - **Module:** [OMIX Limma Analysis](https://github.com/NIDAP-Community/OMIX/tree/main/modules/OMIX-Limma-Analysis)
 - **Canonical path:** `modules/OMIX-Limma-Analysis/`
-- **Canonical module version:** `0.1.2`
-- **Canonical interface version:** `2`
+- **Canonical module version:** `1.0.0`
+- **Canonical interface version:** `3`
 - **Canonical release tag:** **Pending** — no validated namespaced module tag is established.
-- **Canonical source reference:** [`a25d57bcb75b0461648a60833f1957444a47ba28`](https://github.com/NIDAP-Community/OMIX/commit/a25d57bcb75b0461648a60833f1957444a47ba28)
-- **Interface schema:** [schemas/interface.yml](https://github.com/NIDAP-Community/OMIX/blob/a25d57bcb75b0461648a60833f1957444a47ba28/modules/OMIX-Limma-Analysis/schemas/interface.yml)
+- **Canonical source reference:** [`296a77d141af59ab813439d44148b5ce5e100e11`](https://github.com/NIDAP-Community/OMIX/commit/296a77d141af59ab813439d44148b5ce5e100e11)
+- **Interface schema:** [schemas/interface.yml](https://github.com/NIDAP-Community/OMIX/blob/296a77d141af59ab813439d44148b5ce5e100e11/modules/OMIX-Limma-Analysis/schemas/interface.yml)
 - **Module contract:** [OMIX module contract](https://github.com/NIDAP-Community/OMIX/blob/main/docs/module-contract.md)
 
 ## Adapter release record
 
 | Field | Recorded value |
 | --- | --- |
-| Adapter version | `0.1.2` |
-| Adapter release tag | Proposed annotated tag `v0.1.2` targeting validated adapter commit `ed6d3cb058c9618dd18f14d9eaad4192e178bac7`; pending owner approval and creation. Existing tag `v0.1.0` remains unchanged as a historical provenance record. |
+| Adapter version | Unreleased interface-3 synchronization; no adapter release version has been assigned. |
+| Adapter release tag | **Pending** — existing historical tags remain unchanged. |
 | Platform release | Code Ocean Standard Capsule release `2.0`: [`ffab7e89-72c4-4271-b888-b02a1e06db7c/tree/v2`](https://poc-nci.codeocean.io/capsule/ffab7e89-72c4-4271-b888-b02a1e06db7c/tree/v2), created 2026-10-05 from source capsule `8635652` at adapter commit `ed6d3cb058c9618dd18f14d9eaad4192e178bac7`. |
 | Canonical runtime profile | `r-statistics` |
 | Published OMIX runtime | `ghcr.io/nidap-community/omix-r-statistics@sha256:1325722877fec5167d171aa766ddf7bbfd056e4999bf40fd8c1eabee495da667` |
@@ -28,6 +28,11 @@
 
 The canonical source commit, adapter tag, public OCI digest, Code Ocean
 environment, capsule run, and platform release are separate facts.
+
+The platform release and runs recorded above validate the earlier adapter
+state only. This interface-3 synchronization is not yet a Code Ocean release
+claim; it requires a new platform run and explicit release approval after the
+adapter pull request is merged.
 
 ### Version 0.1.2 release validation
 
@@ -117,7 +122,7 @@ criteria are recorded in
 
 | Canonical file | Adapter copy | SHA-256 | Purpose |
 | --- | --- | --- | --- |
-| `R/OMIX_Limma_Analysis.R` | `code/functions/OMIX_Limma_Analysis.R` | `fb48597b758f5acd3339157afc96110d07ba8351a6da7b9be81ed4e4e489ce11` | Canonical Limma model and result construction. |
+| `R/OMIX_Limma_Analysis.R` | `code/functions/OMIX_Limma_Analysis.R` | `385e7683c6f582a8edb7248efadc52193b89b819749005a5c7e9ebf4d684b268` | Canonical Limma model, input-type contract, transformations, variance routing, diagnostics, and result construction. |
 
 The complete canonical `R/` tree contains this one file at the recorded source
 commit. The adapter copy is byte-identical; no scientific edit was applied.
@@ -135,8 +140,16 @@ commit. The adapter copy is byte-identical; no scientific edit was applied.
   decides whether one replicated two-group comparison is unambiguous; the
   adapter never chooses among biological contrasts.
 - `return_matrix` is translated from the App Panel string to an R logical.
-- Manifest validation and `variance_model = auto` match the canonical CLI
-  handoff behavior. The adapter does not introduce another statistical model.
+- `input_data_type`, `input_kind`, `measurement_scale`, fraction-transform
+  controls, and `variance_model` are passed through the canonical interface.
+  A compatible pseudobulk manifest may resolve `input_data_type = auto` and
+  its recommended variance model; otherwise the user must provide enough
+  declaration for the canonical contract to resolve the matrix type.
+- CIBERSORT relative fractions use the canonical transformation behavior;
+  the adapter does not implement a separate transformation or statistical
+  model.
+- The adapter writes the canonical variance diagnostic as CSV and PNG in
+  addition to the analysis, metadata, and run-summary outputs.
 
 ## Synchronization
 

@@ -50,21 +50,28 @@ if (!is.null(attr(output, "status"))) {
 results_path <- file.path(output_dir, "Limma_Analysis.csv")
 metadata_output <- file.path(output_dir, "Sample_Metadata.csv")
 summary_path <- file.path(output_dir, "run_summary.txt")
-stopifnot(all(file.exists(c(results_path, metadata_output, summary_path))))
+diagnostic_path <- file.path(output_dir, "Variance_Diagnostic.csv")
+diagnostic_plot_path <- file.path(output_dir, "variance_diagnostic.png")
+stopifnot(all(file.exists(c(
+  results_path, metadata_output, summary_path, diagnostic_path, diagnostic_plot_path
+))))
 
 results <- utils::read.csv(results_path, check.names = FALSE)
 summary_lines <- readLines(summary_path)
 stopifnot(
   all(c("B-A_FC", "B-A_logFC", "B-A_tstat", "B-A_pval", "B-A_adjpval") %in% names(results)),
+  any(grepl("requested input data type: auto", summary_lines, fixed = TRUE)),
+  any(grepl("input data type: sctransform_mean_expression", summary_lines, fixed = TRUE)),
+  any(grepl("input data type source: manifest", summary_lines, fixed = TRUE)),
   any(grepl("requested variance model: auto", summary_lines, fixed = TRUE)),
-  any(grepl("manifest recommended variance model: ebayes_trend", summary_lines, fixed = TRUE)),
+  any(grepl("recommended variance model: ebayes_trend", summary_lines, fixed = TRUE)),
   any(grepl("variance model: ebayes_trend", summary_lines, fixed = TRUE)),
   any(grepl("model type: repeated_measures", summary_lines, fixed = TRUE)),
   any(grepl("requested contrasts: B-A", summary_lines, fixed = TRUE)),
   any(grepl("resolved contrasts: B-A", summary_lines, fixed = TRUE)),
   any(grepl("contrast source: explicit", summary_lines, fixed = TRUE)),
-  any(grepl("canonical module: OMIX-Limma-Analysis 0.1.2 (interface 2)", summary_lines, fixed = TRUE)),
-  any(grepl("canonical source: a25d57bcb75b0461648a60833f1957444a47ba28", summary_lines, fixed = TRUE))
+  any(grepl("canonical module: OMIX-Limma-Analysis 1.0.0 (interface 3)", summary_lines, fixed = TRUE)),
+  any(grepl("canonical source: 296a77d141af59ab813439d44148b5ce5e100e11", summary_lines, fixed = TRUE))
 )
 
 # A blank contrast must infer the sole replicated two-group comparison and
@@ -131,8 +138,8 @@ stopifnot(all(c(
 ) %in% names(numeric_results)))
 numeric_summary <- readLines(file.path(numeric_output_dir, "run_summary.txt"))
 stopifnot(
-  any(grepl("canonical module: OMIX-Limma-Analysis 0.1.2 (interface 2)", numeric_summary, fixed = TRUE)),
-  any(grepl("canonical source: a25d57bcb75b0461648a60833f1957444a47ba28", numeric_summary, fixed = TRUE))
+  any(grepl("canonical module: OMIX-Limma-Analysis 1.0.0 (interface 3)", numeric_summary, fixed = TRUE)),
+  any(grepl("canonical source: 296a77d141af59ab813439d44148b5ce5e100e11", numeric_summary, fixed = TRUE))
 )
 
 # Numeric-looking arithmetic is invalid when the modeled groups are not
@@ -157,3 +164,45 @@ stopifnot(
 )
 
 message("OMIX Limma Analysis numeric-group workflow-handoff checks passed")
+
+# The deployment entry point must pass the new interface-3 CIBERSORT controls
+# to the canonical function rather than implementing its own transformation.
+fraction_matrix <- data.frame(
+  GeneName = c("CellType1", "CellType2", "CellType3"),
+  D1__A = c(0.20, 0.30, 0.50), D2__A = c(0.25, 0.25, 0.50),
+  D3__A = c(0.30, 0.20, 0.50), D1__B = c(0.50, 0.20, 0.30),
+  D2__B = c(0.55, 0.15, 0.30), D3__B = c(0.60, 0.10, 0.30),
+  check.names = FALSE
+)
+fraction_matrix_path <- file.path(work_dir, "CIBERSORT_Relative_Fractions.csv")
+fraction_output_dir <- file.path(work_dir, "fraction-results")
+utils::write.csv(fraction_matrix, fraction_matrix_path, row.names = FALSE)
+fraction_output <- system2(
+  file.path(R.home("bin"), "Rscript"),
+  c(
+    "code/main.R",
+    "--matrix", fraction_matrix_path,
+    "--metadata", metadata_path,
+    "--input_data_type", "cibersort_relative_fractions",
+    "--contrasts", "B-A",
+    "--output_dir", fraction_output_dir
+  ),
+  stdout = TRUE,
+  stderr = TRUE
+)
+if (!is.null(attr(fraction_output, "status"))) {
+  stop("CIBERSORT adapter command failed:\n", paste(fraction_output, collapse = "\n"))
+}
+fraction_results <- utils::read.csv(
+  file.path(fraction_output_dir, "Limma_Analysis.csv"),
+  check.names = FALSE
+)
+fraction_summary <- readLines(file.path(fraction_output_dir, "run_summary.txt"))
+stopifnot(
+  "B-A_effect" %in% names(fraction_results),
+  any(grepl("input data type: cibersort_relative_fractions", fraction_summary, fixed = TRUE)),
+  any(grepl("fraction transform: arcsin_sqrt", fraction_summary, fixed = TRUE)),
+  any(grepl("variance model: ebayes", fraction_summary, fixed = TRUE))
+)
+
+message("OMIX Limma Analysis CIBERSORT interface-3 handoff checks passed")
