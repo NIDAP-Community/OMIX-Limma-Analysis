@@ -4,6 +4,11 @@
 
 ### Changed
 
+- Adds a QA-only local-versus-Code Ocean comparator that records table
+  structure, ordered identities, numerical tolerance, significance calls,
+  rankings, stable provenance fields, variance diagnostics, plot dimensions,
+  and checksums in a reviewable JSON report. It changes no scientific code,
+  interface, default, runtime, or deployment output.
 - Synchronizes canonical OMIX Limma Analysis `1.0.0` (interface `3`) from
   source commit `296a77d141af59ab813439d44148b5ce5e100e11`.
 - Exposes the canonical `input_data_type`, `input_kind`, `measurement_scale`,
