@@ -44,8 +44,6 @@ def write_fixture(root: Path, numeric_delta: float = 0.0) -> None:
         "bin,mean,variance\n1,2.0,0.5\n2,4.0,0.75\n", encoding="utf-8"
     )
     (root / "run_summary.txt").write_text(
-        "canonical module: OMIX-Limma-Analysis 1.0.0 (interface 3)\n"
-        "canonical source: 296a77d141af59ab813439d44148b5ce5e100e11\n"
         "input data type: sctransform_mean_expression\n"
         "input data type source: explicit\n"
         "requested variance model: auto\n"

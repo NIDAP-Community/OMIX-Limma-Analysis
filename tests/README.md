@@ -28,7 +28,7 @@ python3 tests/compare-cross-environment.py \
 
 The command compares table dimensions, columns, feature order, categorical and
 missing values, numerical results, significance classifications, p-value
-rankings, stable run-summary provenance, variance diagnostics, and PNG
+rankings, stable scientific run-summary fields, variance diagnostics, and PNG
 dimensions. The JSON report records checksums and maximum numerical difference.
 It exits nonzero when the declared contract fails. Record the exact fixture,
 parameters, commits, runtime identities, capsule/run IDs, tolerance, report

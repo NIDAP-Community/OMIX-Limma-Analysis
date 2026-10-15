@@ -27,8 +27,6 @@ REQUIRED_FILES = (
     "variance_diagnostic.png",
 )
 DEFAULT_SUMMARY_KEYS = (
-    "canonical module",
-    "canonical source",
     "input data type",
     "input data type source",
     "requested variance model",
