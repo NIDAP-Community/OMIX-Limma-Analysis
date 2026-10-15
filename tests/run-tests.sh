@@ -6,5 +6,6 @@ Rscript tests/test-adapter-inputs.R
 Rscript tests/test-pseudobulk-handoff.R
 python3 tests/test-app-panel.py
 python3 tests/test-source-parity.py
+python3 tests/test-cross-environment-comparator.py
 
 echo "All local OMIX Limma Analysis adapter checks passed"
