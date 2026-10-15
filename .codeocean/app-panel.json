@@ -3,7 +3,7 @@
 	"named_parameters": true,
 	"general": {
 		"title": "OMIX Limma Analysis",
-		"instructions": "Fit limma models to a continuous feature-by-sample matrix and aligned sample metadata. Select files explicitly, or attach one upstream result bundle and leave the file selectors blank for unambiguous discovery.\n\nFor OMIX Seurat Pseudobulk, keep the continuous matrix, Pseudobulk_Sample_Metadata.csv, and Pseudobulk_Manifest.dcf together. The manifest selects eBayes for Harmony means or eBayes with trend for SCTransform means when Variance Model is auto. Raw-count pseudobulk is rejected and must be analyzed with OMIX DEG Analysis.\n\nContrasts may be left blank only when the selected model contains exactly two groups with at least two samples each. In that one unambiguous case, the comparison is inferred and recorded; otherwise provide the intended contrast explicitly."
+		"instructions": "Fit limma models to a declared continuous feature-by-sample matrix and aligned sample metadata. Select files explicitly, or attach one upstream result bundle and leave the file selectors blank for unambiguous discovery.\n\nSelect Input Data Type for general matrices so the scientific interpretation and automatic variance model are reproducible. For OMIX Seurat Pseudobulk, keep the continuous matrix, Pseudobulk_Sample_Metadata.csv, and Pseudobulk_Manifest.dcf together; the manifest can resolve the type and variance model automatically. Raw-count pseudobulk is rejected and must be analyzed with OMIX DEG Analysis. CIBERSORT relative fractions use the selected Fraction Transform.\n\nContrasts may be left blank only when the selected model contains exactly two groups with at least two samples each. In that one unambiguous case, the comparison is inferred and recorded; otherwise provide the intended contrast explicitly."
 	},
 	"categories": [
 		{
@@ -113,19 +113,84 @@
 			"value_type": "string"
 		},
 		{
+			"id": "input_data_type",
+			"category": "data",
+			"name": "Input Data Type",
+			"param_name": "input_data_type",
+			"description": "Scientific interpretation of the matrix. Auto uses a compatible pseudobulk manifest or the backward-compatible Input Kind mapping. Select the explicit type for other matrices so the variance model and effect labels are reproducible.",
+			"type": "list",
+			"value_type": "string",
+			"default_value": "auto",
+			"extra_data": [
+				"auto",
+				"microarray_log2_expression",
+				"normalized_bulk_expression",
+				"log2_cpm_without_voom_weights",
+				"sctransform_mean_expression",
+				"harmony_corrected_mean_expression",
+				"gsva_enrichment_scores",
+				"cibersort_relative_fractions",
+				"cibersort_absolute_scores",
+				"methylation_m_values",
+				"normalized_proteomics",
+				"normalized_metabolomics",
+				"qpcr_delta_ct",
+				"copy_number_log2_ratios",
+				"normalized_chromatin_accessibility",
+				"normalized_crispr_scores",
+				"other_continuous"
+			]
+		},
+		{
 			"id": "input_kind",
 			"category": "data",
 			"name": "Input Kind",
 			"param_name": "input_kind",
-			"description": "Declared matrix scale. Raw counts and untransformed proportions are not accepted.",
+			"description": "Controls effect-size labeling. Auto derives log2 expression, enrichment score, or generic continuous score from Input Data Type.",
 			"type": "list",
 			"value_type": "string",
-			"default_value": "log2_expression",
+			"default_value": "auto",
 			"extra_data": [
+				"auto",
 				"log2_expression",
 				"enrichment_score",
 				"continuous_score"
 			]
+		},
+		{
+			"id": "measurement_scale",
+			"category": "data",
+			"name": "Measurement Scale",
+			"param_name": "measurement_scale",
+			"description": "Short description of the supplied measurement scale. Required for other_continuous and recommended for externally prepared matrices.",
+			"type": "text",
+			"value_type": "string"
+		},
+		{
+			"id": "fraction_transform",
+			"category": "data",
+			"name": "Fraction Transform",
+			"param_name": "fraction_transform",
+			"description": "Transformation for CIBERSORT relative fractions. Auto uses arcsin square root; logit uses the boundary pseudocount.",
+			"type": "list",
+			"value_type": "string",
+			"default_value": "auto",
+			"extra_data": [
+				"auto",
+				"none",
+				"arcsin_sqrt",
+				"logit"
+			]
+		},
+		{
+			"id": "fraction_pseudocount",
+			"category": "data",
+			"name": "Fraction Pseudocount",
+			"param_name": "fraction_pseudocount",
+			"description": "Boundary replacement used only for an explicit logit transform of CIBERSORT relative fractions. Must be greater than 0 and less than 0.5.",
+			"type": "number",
+			"value_type": "number",
+			"default_value": 0.0001
 		},
 		{
 			"id": "variance_model",
@@ -190,6 +255,12 @@
 		},
 		{
 			"file_name": "run_summary.txt"
+		},
+		{
+			"file_name": "Variance_Diagnostic.csv"
+		},
+		{
+			"file_name": "variance_diagnostic.png"
 		}
 	]
 }
