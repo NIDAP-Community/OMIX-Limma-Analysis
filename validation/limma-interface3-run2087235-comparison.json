@@ -1,0 +1,145 @@
+{
+  "contract": "omix-limma-cross-environment-v1",
+  "local_directory": "/private/tmp/omix-limma-interface3-IDrfId/local-results",
+  "code_ocean_directory": "/private/tmp/omix-limma-interface3-IDrfId/code-ocean-results-2087235",
+  "numeric_tolerance": 1e-12,
+  "required_files": [
+    "Limma_Analysis.csv",
+    "Sample_Metadata.csv",
+    "run_summary.txt",
+    "Variance_Diagnostic.csv",
+    "variance_diagnostic.png"
+  ],
+  "files": {
+    "Limma_Analysis.csv": {
+      "local_sha256": "c8fd5fceba2e15ce186ab546a3fc755f805175eb46bd1dc0d0591eeb445f94df",
+      "platform_sha256": "64820539bc2c941c324b345c0664af2b3c7bae3e6d4531a776ebab10754b5236",
+      "local_dimensions": [
+        120,
+        19
+      ],
+      "platform_dimensions": [
+        120,
+        19
+      ],
+      "headers_identical": true,
+      "maximum_absolute_numeric_difference": 1.9984014443252818e-14,
+      "numeric_values_compared": 2160,
+      "mismatched_cells": 0,
+      "mismatch_examples": []
+    },
+    "Sample_Metadata.csv": {
+      "local_sha256": "4df670a03667895abf6926c9d2ab8949e2488cdc027f20aeb3e8b88200fa4687",
+      "platform_sha256": "4df670a03667895abf6926c9d2ab8949e2488cdc027f20aeb3e8b88200fa4687",
+      "local_dimensions": [
+        8,
+        6
+      ],
+      "platform_dimensions": [
+        8,
+        6
+      ],
+      "headers_identical": true,
+      "maximum_absolute_numeric_difference": 0.0,
+      "numeric_values_compared": 8,
+      "mismatched_cells": 0,
+      "mismatch_examples": []
+    },
+    "Variance_Diagnostic.csv": {
+      "local_sha256": "47db2d733160a0a497edd913f9894456121ba368367f532071716b8dfae2470e",
+      "platform_sha256": "071dd48b4b5521bcb0ae8869f389aac2733b7140af91a9e0767974ea432d35c2",
+      "local_dimensions": [
+        120,
+        3
+      ],
+      "platform_dimensions": [
+        120,
+        3
+      ],
+      "headers_identical": true,
+      "maximum_absolute_numeric_difference": 9.992007221626409e-16,
+      "numeric_values_compared": 240,
+      "mismatched_cells": 0,
+      "mismatch_examples": []
+    },
+    "run_summary.txt": {
+      "local_sha256": "abafb93652281c3410e32c0caf7ae649120ba92a52b9e57386e85c0bd564f67c",
+      "platform_sha256": "2a05ab7f29b62854d73a97a03a270fe626c713a84ac8f65646a66d55b59c5b8c",
+      "stable_fields": {
+        "input data type": {
+          "local": "sctransform_mean_expression",
+          "platform": "sctransform_mean_expression",
+          "matches": true
+        },
+        "input data type source": {
+          "local": "manifest",
+          "platform": "manifest",
+          "matches": true
+        },
+        "requested variance model": {
+          "local": "auto",
+          "platform": "auto",
+          "matches": true
+        },
+        "variance model": {
+          "local": "ebayes_trend",
+          "platform": "ebayes_trend",
+          "matches": true
+        },
+        "model type": {
+          "local": "repeated_measures",
+          "platform": "repeated_measures",
+          "matches": true
+        },
+        "requested contrasts": {
+          "local": "B-A",
+          "platform": "B-A",
+          "matches": true
+        },
+        "resolved contrasts": {
+          "local": "B-A",
+          "platform": "B-A",
+          "matches": true
+        },
+        "contrast source": {
+          "local": "explicit",
+          "platform": "explicit",
+          "matches": true
+        },
+        "group replicate counts": {
+          "local": "A=4,B=4",
+          "platform": "A=4,B=4",
+          "matches": true
+        }
+      }
+    },
+    "variance_diagnostic.png": {
+      "local_sha256": "519d95f0b65e745aab66b9aaedee216413199b1746cfcdc29a3b5b56b72d8e3e",
+      "platform_sha256": "519d95f0b65e745aab66b9aaedee216413199b1746cfcdc29a3b5b56b72d8e3e",
+      "local_dimensions": [
+        1400,
+        1000
+      ],
+      "platform_dimensions": [
+        1400,
+        1000
+      ],
+      "byte_identical": true,
+      "structurally_equivalent": true
+    }
+  },
+  "statistical_checks": {
+    "B-A_pval": {
+      "threshold": 0.05,
+      "significance_classifications_identical": true,
+      "rank_order_identical": true
+    },
+    "B-A_adjpval": {
+      "threshold": 0.05,
+      "significance_classifications_identical": true,
+      "rank_order_identical": true
+    }
+  },
+  "passed": true,
+  "failures": []
+}
