@@ -188,9 +188,9 @@
 			"name": "Fraction Pseudocount",
 			"param_name": "fraction_pseudocount",
 			"description": "Boundary replacement used only for an explicit logit transform of CIBERSORT relative fractions. Must be greater than 0 and less than 0.5.",
-			"type": "number",
+			"type": "text",
 			"value_type": "number",
-			"default_value": 0.0001
+			"default_value": "0.0001"
 		},
 		{
 			"id": "variance_model",

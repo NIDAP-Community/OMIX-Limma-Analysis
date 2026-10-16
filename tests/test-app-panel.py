@@ -57,7 +57,7 @@ expected_defaults = {
     "input_kind": "auto",
     "measurement_scale": "",
     "fraction_transform": "auto",
-    "fraction_pseudocount": 0.0001,
+    "fraction_pseudocount": "0.0001",
     "variance_model": "auto",
     "summarization_method": "mean",
     "samples_to_include": "",
@@ -108,6 +108,8 @@ assert by_name["fraction_transform"]["extra_data"] == [
     "arcsin_sqrt",
     "logit",
 ]
+assert by_name["fraction_pseudocount"]["type"] == "text"
+assert by_name["fraction_pseudocount"]["value_type"] == "number"
 assert by_name["variance_model"]["extra_data"] == [
     "auto",
     "ebayes",
