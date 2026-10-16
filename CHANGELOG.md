@@ -35,6 +35,10 @@
 
 ### Validated
 
+- Code Ocean run `2121757` exercised the fully synchronized interface-3
+  adapter at merge commit `ae0a0b4cd52ce13573e093e80fc5615046410209` and
+  produced immutable Standard Capsule release `3.0`. No adapter Git tag or
+  runtime container was created.
 - Code Ocean release-producing run `1244387` validated canonical `0.1.2`
   blank-contrast inference for one unambiguous replicated two-group model and
   produced Standard Capsule release `2.0`.

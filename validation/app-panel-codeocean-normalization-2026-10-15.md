@@ -83,3 +83,17 @@ The run log ended with `Wrote OMIX Limma Analysis results to /results`. This
 post-merge run closes the App Panel schema-acceptance boundary identified in
 the earlier interface-3 equivalence record. It does not create or imply an
 adapter tag, Code Ocean release, or new runtime publication.
+
+## Standard Capsule release
+
+After this evidence was merged, source capsule `8635652` was synchronized to
+merge commit `ae0a0b4cd52ce13573e093e80fc5615046410209`. Code Ocean required a
+fresh run because the capsule state had changed, even though the final change
+was evidence documentation only.
+
+Run `2121757` completed successfully in four seconds and emitted the same five
+declared artifacts. With explicit release authorization, that run produced
+immutable Standard Capsule release
+[`3.0`](https://poc-nci.codeocean.io/capsule/ffab7e89-72c4-4271-b888-b02a1e06db7c/tree/v3)
+on 2026-10-15. The release action did not create an adapter Git tag or publish
+a runtime container.
