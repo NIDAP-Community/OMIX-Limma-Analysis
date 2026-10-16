@@ -34,6 +34,29 @@ state only. This interface-3 synchronization is not yet a Code Ocean release
 claim; it requires a new platform run and explicit release approval after the
 adapter pull request is merged.
 
+### Interface-3 cross-environment validation
+
+Code Ocean run `2087235` in source capsule
+[`8635652`](https://poc-nci.codeocean.io/capsule/8635652/tree) exercised the
+merged interface-3 adapter at `d33b1a06f488b00224919f328d1e592f1b334620`
+with a deterministic SCTransform mean-expression fixture. Manifest routing
+resolved `input_data_type = sctransform_mean_expression` and
+`variance_model = ebayes_trend`; the repeated-measures model evaluated
+contrast `B-A` across 120 features and eight samples.
+
+The Code Ocean outputs passed the repository cross-environment comparator
+against a local execution in the pinned public runtime. Across 2,160 result
+values, the maximum absolute difference was `1.9984014443252818e-14`, with no
+cells outside the `1e-12` tolerance. Nominal and adjusted significance calls
+and rank ordering were identical, sample metadata was byte-identical, and the
+variance-diagnostic PNG was byte-identical. Full checksums and the
+machine-readable report are recorded in
+[`validation/limma-interface3-run2087235-equivalence.md`](validation/limma-interface3-run2087235-equivalence.md).
+
+This validates the representative scientific handoff but does not establish a
+new tag or release. Code Ocean App Panel acceptance and exposure of all
+interface-3 controls remain a separate deployment-UI requirement.
+
 ### Version 0.1.2 release validation
 
 Release-producing Code Ocean run `1244387` in source capsule
