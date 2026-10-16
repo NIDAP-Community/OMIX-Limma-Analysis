@@ -15,24 +15,36 @@
 
 | Field | Recorded value |
 | --- | --- |
-| Adapter version | Unreleased interface-3 synchronization; no adapter release version has been assigned. |
+| Adapter version | Interface-3 synchronization released on Code Ocean; no adapter version or Git tag has been assigned. |
 | Adapter release tag | **Pending** — existing historical tags remain unchanged. |
-| Platform release | Code Ocean Standard Capsule release `2.0`: [`ffab7e89-72c4-4271-b888-b02a1e06db7c/tree/v2`](https://poc-nci.codeocean.io/capsule/ffab7e89-72c4-4271-b888-b02a1e06db7c/tree/v2), created 2026-10-05 from source capsule `8635652` at adapter commit `ed6d3cb058c9618dd18f14d9eaad4192e178bac7`. |
+| Platform release | Code Ocean Standard Capsule release `3.0`: [`ffab7e89-72c4-4271-b888-b02a1e06db7c/tree/v3`](https://poc-nci.codeocean.io/capsule/ffab7e89-72c4-4271-b888-b02a1e06db7c/tree/v3), created 2026-10-15 from source capsule `8635652` at adapter commit `ae0a0b4cd52ce13573e093e80fc5615046410209`. |
 | Canonical runtime profile | `r-statistics` |
 | Published OMIX runtime | `ghcr.io/nidap-community/omix-r-statistics@sha256:1325722877fec5167d171aa766ddf7bbfd056e4999bf40fd8c1eabee495da667` |
 | Runtime lockfile | `starter-environments/r-statistics/renv.lock`, SHA-256 `e86f6e0c2175bff1b4c1d73be67928fa9d808e78f325f407b3b7d278c1c71156` |
 | Adapter-selected base image | `codeocean/omix-r-statistics:r4.4.3-bioconductor3.20-v1` |
 | Code Ocean environment identity | Starter Environment `OMIX Statistics (1)`, selected and validated in capsule `8635652`; this platform identity is recorded separately from the public GHCR digest. |
-| Capsule run | Release-producing run `1244387` and GSVA workflow-handoff run `1254876` in capsule `8635652`, completed successfully on 2026-10-05. |
+| Capsule run | Interface-3 release-producing run `2121757` in capsule `8635652`, completed successfully on 2026-10-15. |
 | Syncweaver mapping | `.syncweaver-lock.json` **Pending** generation by Syncweaver; the initial interim export and hash are recorded below. |
 
 The canonical source commit, adapter tag, public OCI digest, Code Ocean
 environment, capsule run, and platform release are separate facts.
 
-The platform release and runs recorded above validate the earlier adapter
-state only. This interface-3 synchronization is not yet a Code Ocean release
-claim; it requires a new platform run and explicit release approval after the
-adapter pull request is merged.
+### Interface-3 Standard Capsule release
+
+Code Ocean run `2121757` in source capsule
+[`8635652`](https://poc-nci.codeocean.io/capsule/8635652/tree) completed on
+2026-10-15 after the repository was synchronized to merged adapter commit
+`ae0a0b4cd52ce13573e093e80fc5615046410209`. It emitted all five declared
+artifacts and produced immutable Standard Capsule release
+[`3.0`](https://poc-nci.codeocean.io/capsule/ffab7e89-72c4-4271-b888-b02a1e06db7c/tree/v3).
+
+This release contains canonical OMIX Limma Analysis `1.0.0`, interface `3`,
+and the validated Code Ocean App Panel representation. It supersedes Standard
+Capsule release `2.0` for new platform runs. Release `2.0` remains an immutable
+historical record of the earlier interface-2 adapter state.
+
+No adapter Git tag or runtime container was created as part of this platform
+release. Those remain separate, explicitly authorized actions.
 
 ### Interface-3 cross-environment validation
 
