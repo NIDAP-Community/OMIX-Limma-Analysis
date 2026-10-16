@@ -48,3 +48,38 @@ future schema refresh cannot silently restore the rejected form.
 - The five declared result files were accepted by the App Builder.
 - `bash tests/run-tests.sh` passed after the repository normalization.
 
+## Post-merge synchronized capsule run
+
+After pull requests 11 and 12 were merged, capsule `8635652` was synchronized
+to adapter merge commit `96659ba573ee982daa33f974d17671e6fc9a11a0`. The
+provisional App Builder edit was discarded before synchronization, so this run
+exercised the repository-owned App Panel rather than a capsule-local copy.
+
+Code Ocean run `2119697` completed on 2026-10-15 in five seconds with the same
+deterministic SCTransform pseudobulk fixture used for the recorded interface-3
+equivalence check. The run summary recorded:
+
+- requested input data type `auto`;
+- resolved input data type `sctransform_mean_expression`, sourced from the
+  pseudobulk manifest;
+- resolved input kind `log2_expression`;
+- requested fraction transform `auto`, resolved to `none` for this non-fraction
+  matrix;
+- requested variance model `auto`;
+- recommended and applied variance model `ebayes_trend`, sourced from the
+  pseudobulk manifest;
+- repeated-measures model; and
+- explicit and resolved contrast `B-A`.
+
+The synchronized capsule emitted all five declared artifacts:
+
+- `Limma_Analysis.csv`;
+- `Sample_Metadata.csv`;
+- `run_summary.txt`;
+- `Variance_Diagnostic.csv`; and
+- `variance_diagnostic.png`.
+
+The run log ended with `Wrote OMIX Limma Analysis results to /results`. This
+post-merge run closes the App Panel schema-acceptance boundary identified in
+the earlier interface-3 equivalence record. It does not create or imply an
+adapter tag, Code Ocean release, or new runtime publication.
