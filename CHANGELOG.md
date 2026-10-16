@@ -4,6 +4,11 @@
 
 ### Changed
 
+- Declared the attached representative pseudobulk bundle in the App Panel's
+  top-level `datasets` array so a released capsule can expose a replaceable
+  workflow input node. This changes deployment wiring only; limma behavior,
+  managed scientific code, runtime, and standalone input discovery are
+  unchanged.
 - Adds a QA-only local-versus-Code Ocean comparator that records table
   structure, ordered identities, numerical tolerance, significance calls,
   rankings, stable provenance fields, variance diagnostics, plot dimensions,

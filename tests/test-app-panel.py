@@ -11,10 +11,15 @@ panel = json.loads(panel_text)
 
 assert panel["named_parameters"] is True
 assert "help_text" not in panel_text
-# Code Ocean removes an empty top-level datasets array when it normalizes the
-# App Panel. Attached data assets are recorded separately in datasets.json, so
-# an omitted key and an explicit empty array are equivalent here.
-assert panel.get("datasets", []) == []
+# A workflow-ready capsule declares the same representative bundle both as an
+# attached `/data` mount and as a visible, replaceable workflow input node.
+datasets = json.loads(Path(".codeocean/datasets.json").read_text())
+assert panel["datasets"] == [
+    {"id": "3766a754-c931-4ff7-9e7b-83ffb64e7ea8", "name": "Pseudobulk Expression Bundle"}
+]
+assert [item["id"] for item in panel["datasets"]] == [
+    item["id"] for item in datasets["attached_datasets"]
+]
 
 parameters = panel["parameters"]
 names = [parameter.get("param_name") for parameter in parameters]
