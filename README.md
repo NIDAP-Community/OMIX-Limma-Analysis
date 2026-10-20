@@ -71,8 +71,11 @@ OMIX DEG Analysis.
    groups are numeric, or leave the field blank only when the selected model
    has exactly two groups with at least two samples each. In that one
    unambiguous case, the capsule infers and records the sole comparison.
-3. Add covariates only when scientifically justified. Add a donor variable
-   only when a donor contributes repeated modeled profiles.
+3. Add covariates only when scientifically justified. Use **Batch Effect
+   Columns** only for declared technical batches; they are modeled in the DE
+   analysis and can be removed from the optional downstream expression matrix
+   without changing DE statistics. Add a donor variable only when a donor
+   contributes repeated modeled profiles.
 4. Select the scientific **Input Data Type**, or keep `auto` only when a
    compatible Pseudobulk manifest or backward-compatible Input Kind supplies
    the declaration. The program never guesses SCT, Harmony, GSVA, or another
@@ -98,6 +101,7 @@ for the variance-model recommendation for every supported data type.
 | --- | --- |
 | `Limma_Analysis.csv` | Contrast statistics and, by default, the aligned modeled matrix. |
 | `Sample_Metadata.csv` | Metadata in modeled sample order. |
+| `Batch_Corrected_Expression.csv` | Optional continuous matrix with declared technical batch effects removed while biological groups are protected. Written only when requested with at least one varying batch column. |
 | `run_summary.txt` | Resolved inputs, variance model, design, contrasts, donor correlation, source, and runtime provenance. |
 | `Variance_Diagnostic.csv` | Per-feature average signal and pre-moderation residual standard deviation. |
 | `variance_diagnostic.png` | Visual check for a remaining mean-variance trend. |

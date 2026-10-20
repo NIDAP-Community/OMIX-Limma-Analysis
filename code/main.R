@@ -24,6 +24,7 @@ option_list <- list(
   make_option("--contrast_variable_columns", type = "character", default = "Group"),
   make_option("--contrasts", type = "character", default = "", help = "Optional comma-separated limma contrasts; blank infers the only replicated two-group comparison"),
   make_option("--covariate_columns", type = "character", default = ""),
+  make_option("--batch_effect_columns", type = "character", default = "", help = "Optional comma-separated technical batch columns included in the model and eligible for downstream removal"),
   make_option("--donor_variable_column", type = "character", default = ""),
   make_option("--summarization_method", type = "character", default = "mean", help = "mean, max, or sum"),
   make_option("--input_data_type", type = "character", default = "auto", help = "Scientific matrix type or auto; see the canonical interface schema"),
@@ -33,6 +34,7 @@ option_list <- list(
   make_option("--fraction_pseudocount", type = "double", default = 1e-04, help = "Boundary value used only for an explicit logit fraction transform"),
   make_option("--variance_model", type = "character", default = "auto", help = "auto, ebayes, or ebayes_trend"),
   make_option("--return_matrix", type = "character", default = "true", help = "true or false"),
+  make_option("--return_batch_corrected_values", type = "character", default = "false", help = "true writes Batch_Corrected_Expression.csv when batch columns are declared"),
   make_option("--output_dir", type = "character", default = "", help = "Platform-managed output directory; defaults to /results")
 )
 
@@ -101,9 +103,11 @@ results <- omix_limma_analysis(
   contrast_variable_columns = contrast_columns,
   contrasts = contrasts,
   covariate_columns = omix_limma_split_csv(opt$covariate_columns),
+  batch_effect_columns = omix_limma_split_csv(opt$batch_effect_columns),
   donor_variable_column = omix_limma_split_csv(opt$donor_variable_column),
   summarization_method = opt$summarization_method,
   return_matrix = omix_limma_as_logical(opt$return_matrix, "return_matrix"),
+  return_batch_corrected_values = omix_limma_as_logical(opt$return_batch_corrected_values, "return_batch_corrected_values"),
   input_kind = input_contract$input_kind,
   variance_model = input_contract$variance_model,
   input_data_type = input_contract$input_data_type,
@@ -131,6 +135,21 @@ utils::write.csv(
 )
 
 run <- attr(results, "omix_limma_run")
+if (isTRUE(run$return_batch_corrected_values) && length(run$adjusted_batch_columns) > 0L) {
+  downstream_expression <- attr(results, "omix_limma_downstream_expression")
+  downstream_table <- data.frame(
+    Gene = rownames(downstream_expression),
+    as.data.frame(downstream_expression, check.names = FALSE),
+    check.names = FALSE,
+    stringsAsFactors = FALSE
+  )
+  utils::write.csv(
+    downstream_table,
+    file.path(output_dir, "Batch_Corrected_Expression.csv"),
+    row.names = FALSE,
+    na = ""
+  )
+}
 variance_diagnostic <- attr(results, "omix_limma_variance_diagnostic")
 utils::write.csv(
   variance_diagnostic,
@@ -181,6 +200,9 @@ writeLines(c(
   paste("variance model:", run$variance_model),
   paste("model type:", run$model_type),
   paste("design formula:", run$design_formula),
+  paste("batch effect columns:", if (length(run$batch_effect_columns)) paste(run$batch_effect_columns, collapse = ",") else "<none>"),
+  paste("return batch-corrected values:", run$return_batch_corrected_values),
+  paste("adjusted batch columns:", if (length(run$adjusted_batch_columns)) paste(run$adjusted_batch_columns, collapse = ",") else "<none>"),
   paste("requested contrasts:", if (length(run$requested_contrasts)) paste(run$requested_contrasts, collapse = ",") else "<blank>"),
   paste("resolved contrasts:", paste(run$contrasts, collapse = ",")),
   paste("contrast source:", run$contrast_source),
@@ -188,8 +210,8 @@ writeLines(c(
   paste("genes modelled:", run$genes_modelled),
   paste("samples modelled:", run$samples_modelled),
   paste("consensus donor correlation:", run$consensus_correlation),
-  "canonical module: OMIX-Limma-Analysis 1.0.0 (interface 3)",
-  "canonical source: 296a77d141af59ab813439d44148b5ce5e100e11",
+  "canonical module: OMIX-Limma-Analysis 1.1.0 (interface 3)",
+  "canonical source: 8ad4cdb4ee92aff9f2b53f69a2e33137a4e1886c",
   "runtime profile: r-statistics r4.4.3-bioconductor3.20-v1"
 ), file.path(output_dir, "run_summary.txt"))
 

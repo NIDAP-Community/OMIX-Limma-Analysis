@@ -110,6 +110,15 @@
 			"value_type": "string"
 		},
 		{
+			"id": "batch_effect_columns",
+			"category": "model",
+			"name": "Batch Effect Columns",
+			"param_name": "batch_effect_columns",
+			"description": "Optional comma-separated technical batch columns. They are included in the Limma model and may be removed only from the optional downstream expression matrix.",
+			"type": "text",
+			"value_type": "string"
+		},
+		{
 			"id": "donor_variable_column",
 			"category": "model",
 			"name": "Donor Variable Column",
@@ -250,6 +259,20 @@
 				"true",
 				"false"
 			]
+		},
+		{
+			"id": "return_batch_corrected_values",
+			"category": "advanced",
+			"name": "Write Batch-Corrected Expression",
+			"param_name": "return_batch_corrected_values",
+			"description": "When Batch Effect Columns are supplied, write Batch_Corrected_Expression.csv for downstream continuous-expression tools. This does not change Limma DE statistics.",
+			"type": "list",
+			"value_type": "string",
+			"default_value": "false",
+			"extra_data": [
+				"false",
+				"true"
+			]
 		}
 	],
 	"results": [
@@ -258,6 +281,9 @@
 		},
 		{
 			"file_name": "Sample_Metadata.csv"
+		},
+		{
+			"file_name": "Batch_Corrected_Expression.csv"
 		},
 		{
 			"file_name": "run_summary.txt"

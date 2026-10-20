@@ -70,8 +70,48 @@ stopifnot(
   any(grepl("requested contrasts: B-A", summary_lines, fixed = TRUE)),
   any(grepl("resolved contrasts: B-A", summary_lines, fixed = TRUE)),
   any(grepl("contrast source: explicit", summary_lines, fixed = TRUE)),
-  any(grepl("canonical module: OMIX-Limma-Analysis 1.0.0 (interface 3)", summary_lines, fixed = TRUE)),
-  any(grepl("canonical source: 296a77d141af59ab813439d44148b5ce5e100e11", summary_lines, fixed = TRUE))
+  any(grepl("canonical module: OMIX-Limma-Analysis 1.1.0 (interface 3)", summary_lines, fixed = TRUE)),
+  any(grepl("canonical source: 8ad4cdb4ee92aff9f2b53f69a2e33137a4e1886c", summary_lines, fixed = TRUE))
+)
+
+# Declared technical batches are retained in the DE model and, only when
+# explicitly requested, produce a separate matrix for downstream continuous
+# workflows. The biological comparison remains protected during removal.
+batch_metadata_path <- file.path(work_dir, "Batch_Pseudobulk_Sample_Metadata.csv")
+batch_output_dir <- file.path(work_dir, "batch-results")
+utils::write.csv(
+  transform(metadata, Batch = c("Batch1", "Batch2", "Batch1", "Batch2", "Batch1", "Batch2")),
+  batch_metadata_path,
+  row.names = FALSE
+)
+batch_output <- system2(
+  file.path(R.home("bin"), "Rscript"),
+  c(
+    "code/main.R",
+    "--matrix", matrix_path,
+    "--metadata", batch_metadata_path,
+    "--pseudobulk_manifest", manifest_path,
+    "--contrasts", "B-A",
+    "--batch_effect_columns", "Batch",
+    "--return_batch_corrected_values", "true",
+    "--output_dir", batch_output_dir
+  ),
+  stdout = TRUE,
+  stderr = TRUE
+)
+if (!is.null(attr(batch_output, "status"))) {
+  stop("Batch-corrected adapter command failed:\n", paste(batch_output, collapse = "\n"))
+}
+batch_matrix <- utils::read.csv(
+  file.path(batch_output_dir, "Batch_Corrected_Expression.csv"),
+  check.names = FALSE
+)
+batch_summary <- readLines(file.path(batch_output_dir, "run_summary.txt"))
+stopifnot(
+  identical(names(batch_matrix), c("Gene", metadata$Sample)),
+  any(grepl("batch effect columns: Batch", batch_summary, fixed = TRUE)),
+  any(grepl("return batch-corrected values: TRUE", batch_summary, fixed = TRUE)),
+  any(grepl("adjusted batch columns: Batch", batch_summary, fixed = TRUE))
 )
 
 # A blank contrast must infer the sole replicated two-group comparison and
@@ -138,8 +178,8 @@ stopifnot(all(c(
 ) %in% names(numeric_results)))
 numeric_summary <- readLines(file.path(numeric_output_dir, "run_summary.txt"))
 stopifnot(
-  any(grepl("canonical module: OMIX-Limma-Analysis 1.0.0 (interface 3)", numeric_summary, fixed = TRUE)),
-  any(grepl("canonical source: 296a77d141af59ab813439d44148b5ce5e100e11", numeric_summary, fixed = TRUE))
+  any(grepl("canonical module: OMIX-Limma-Analysis 1.1.0 (interface 3)", numeric_summary, fixed = TRUE)),
+  any(grepl("canonical source: 8ad4cdb4ee92aff9f2b53f69a2e33137a4e1886c", numeric_summary, fixed = TRUE))
 )
 
 # Numeric-looking arithmetic is invalid when the modeled groups are not
