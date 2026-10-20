@@ -4,6 +4,11 @@
 
 ### Changed
 
+- Synchronizes canonical OMIX Limma Analysis `1.1.0` (interface `3`) from
+  source commit `8ad4cdb4ee92aff9f2b53f69a2e33137a4e1886c`.
+- Exposes declared technical batch columns and the opt-in batch-corrected
+  continuous-expression handoff. The canonical model protects biological
+  groups, and this deployment change does not alter DE statistics.
 - Declared the attached representative pseudobulk bundle in the App Panel's
   top-level `datasets` array so a released capsule can expose a replaceable
   workflow input node. This changes deployment wiring only; limma behavior,

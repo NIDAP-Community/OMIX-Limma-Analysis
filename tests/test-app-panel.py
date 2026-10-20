@@ -32,6 +32,7 @@ expected = [
     "contrast_variable_columns",
     "contrasts",
     "covariate_columns",
+    "batch_effect_columns",
     "donor_variable_column",
     "input_data_type",
     "input_kind",
@@ -42,6 +43,7 @@ expected = [
     "summarization_method",
     "samples_to_include",
     "return_matrix",
+    "return_batch_corrected_values",
 ]
 assert names == expected, (names, expected)
 assert len(names) == len(set(names))
@@ -57,6 +59,7 @@ expected_defaults = {
     "contrast_variable_columns": "Group",
     "contrasts": "",
     "covariate_columns": "",
+    "batch_effect_columns": "",
     "donor_variable_column": "",
     "input_data_type": "auto",
     "input_kind": "auto",
@@ -67,6 +70,7 @@ expected_defaults = {
     "summarization_method": "mean",
     "samples_to_include": "",
     "return_matrix": "true",
+    "return_batch_corrected_values": "false",
 }
 for name, default in expected_defaults.items():
     # Code Ocean omits empty-string defaults when it normalizes text fields.
@@ -122,12 +126,14 @@ assert by_name["variance_model"]["extra_data"] == [
 ]
 assert by_name["summarization_method"]["extra_data"] == ["mean", "max", "sum"]
 assert by_name["return_matrix"]["extra_data"] == ["true", "false"]
+assert by_name["return_batch_corrected_values"]["extra_data"] == ["false", "true"]
 assert "output_dir" not in names
 
 result_names = [result["file_name"] for result in panel["results"]]
 assert result_names == [
     "Limma_Analysis.csv",
     "Sample_Metadata.csv",
+    "Batch_Corrected_Expression.csv",
     "run_summary.txt",
     "Variance_Diagnostic.csv",
     "variance_diagnostic.png",

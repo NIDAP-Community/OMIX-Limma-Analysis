@@ -4,11 +4,11 @@
 
 - **Module:** [OMIX Limma Analysis](https://github.com/NIDAP-Community/OMIX/tree/main/modules/OMIX-Limma-Analysis)
 - **Canonical path:** `modules/OMIX-Limma-Analysis/`
-- **Canonical module version:** `1.0.0`
+- **Canonical module version:** `1.1.0`
 - **Canonical interface version:** `3`
 - **Canonical release tag:** **Pending** — no validated namespaced module tag is established.
-- **Canonical source reference:** [`296a77d141af59ab813439d44148b5ce5e100e11`](https://github.com/NIDAP-Community/OMIX/commit/296a77d141af59ab813439d44148b5ce5e100e11)
-- **Interface schema:** [schemas/interface.yml](https://github.com/NIDAP-Community/OMIX/blob/296a77d141af59ab813439d44148b5ce5e100e11/modules/OMIX-Limma-Analysis/schemas/interface.yml)
+- **Canonical source reference:** [`8ad4cdb4ee92aff9f2b53f69a2e33137a4e1886c`](https://github.com/NIDAP-Community/OMIX/commit/8ad4cdb4ee92aff9f2b53f69a2e33137a4e1886c)
+- **Interface schema:** [schemas/interface.yml](https://github.com/NIDAP-Community/OMIX/blob/8ad4cdb4ee92aff9f2b53f69a2e33137a4e1886c/modules/OMIX-Limma-Analysis/schemas/interface.yml)
 - **Module contract:** [OMIX module contract](https://github.com/NIDAP-Community/OMIX/blob/main/docs/module-contract.md)
 
 ## Adapter release record
@@ -157,7 +157,7 @@ criteria are recorded in
 
 | Canonical file | Adapter copy | SHA-256 | Purpose |
 | --- | --- | --- | --- |
-| `R/OMIX_Limma_Analysis.R` | `code/functions/OMIX_Limma_Analysis.R` | `385e7683c6f582a8edb7248efadc52193b89b819749005a5c7e9ebf4d684b268` | Canonical Limma model, input-type contract, transformations, variance routing, diagnostics, and result construction. |
+| `R/OMIX_Limma_Analysis.R` | `code/functions/OMIX_Limma_Analysis.R` | `742e9a048e6a2617fddc3b8ab401014da6204f876f4a26eafea549219726146b` | Canonical Limma model, input-type contract, batch-corrected downstream handoff, transformations, variance routing, diagnostics, and result construction. |
 
 The complete canonical `R/` tree contains this one file at the recorded source
 commit. The adapter copy is byte-identical; no scientific edit was applied.
@@ -175,6 +175,10 @@ commit. The adapter copy is byte-identical; no scientific edit was applied.
   decides whether one replicated two-group comparison is unambiguous; the
   adapter never chooses among biological contrasts.
 - `return_matrix` is translated from the App Panel string to an R logical.
+- `batch_effect_columns` and `return_batch_corrected_values` are translated
+  from the App Panel without changing the canonical model. When explicitly
+  requested with a varying declared batch column, the adapter writes the
+  canonical `Batch_Corrected_Expression.csv` downstream handoff.
 - `input_data_type`, `input_kind`, `measurement_scale`, fraction-transform
   controls, and `variance_model` are passed through the canonical interface.
   A compatible pseudobulk manifest may resolve `input_data_type = auto` and
