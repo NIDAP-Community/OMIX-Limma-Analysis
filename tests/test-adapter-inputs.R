@@ -101,4 +101,40 @@ stopifnot(
   grepl("OMIX-DEG-Analysis", raw_error, fixed = TRUE)
 )
 
+# Selected/all Pseudobulk collections use a distinct top-level manifest.  The
+# adapter may discover it only when exactly one filename-specific candidate is
+# attached, never by confusing an ordinary Pseudobulk_Manifest.dcf with a
+# collection contract.
+collection_dir <- file.path(root, "cell-type-collection")
+dir.create(collection_dir)
+collection_manifest <- file.path(collection_dir, "Pseudobulk_Collection_Manifest.dcf")
+base::write.dcf(data.frame(
+  format_version = "1",
+  collection_kind = "cell_type_pseudobulk",
+  cell_type_selection_mode = "selected",
+  profile_catalog = "Cell_Type_Profile_Catalog.csv",
+  stringsAsFactors = FALSE
+), collection_manifest)
+resolved_collection <- omix_limma_resolve_collection_manifest(
+  code_dir = file.path(getwd(), "code")
+)
+stopifnot(identical(resolved_collection, normalizePath(collection_manifest)))
+
+second_collection_dir <- file.path(root, "second-cell-type-collection")
+dir.create(second_collection_dir)
+second_collection_manifest <- file.path(
+  second_collection_dir,
+  "Pseudobulk_Collection_Manifest.dcf"
+)
+file.copy(collection_manifest, second_collection_manifest)
+collection_ambiguous <- tryCatch(
+  omix_limma_resolve_collection_manifest(code_dir = file.path(getwd(), "code")),
+  error = conditionMessage
+)
+stopifnot(
+  grepl("Multiple compatible Pseudobulk collection manifest candidates", collection_ambiguous, fixed = TRUE),
+  grepl(normalizePath(collection_manifest), collection_ambiguous, fixed = TRUE),
+  grepl(normalizePath(second_collection_manifest), collection_ambiguous, fixed = TRUE)
+)
+
 message("OMIX Limma Analysis adapter input-discovery checks passed")

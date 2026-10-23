@@ -24,13 +24,16 @@ assert [item["id"] for item in panel["datasets"]] == [
 parameters = panel["parameters"]
 names = [parameter.get("param_name") for parameter in parameters]
 expected = [
+    "analysis_route",
     "matrix",
     "metadata",
     "pseudobulk_manifest",
+    "pseudobulk_collection_manifest",
     "gene_names_column",
     "sample_names_column",
     "contrast_variable_columns",
     "contrasts",
+    "contrast",
     "covariate_columns",
     "batch_effect_columns",
     "donor_variable_column",
@@ -54,10 +57,12 @@ assert cli_names == set(expected) | {"output_dir"}, sorted(cli_names)
 
 by_name = {parameter["param_name"]: parameter for parameter in parameters}
 expected_defaults = {
+    "analysis_route": "single_matrix",
     "gene_names_column": "GeneName",
     "sample_names_column": "Sample",
     "contrast_variable_columns": "Group",
     "contrasts": "",
+    "contrast": "M-F",
     "covariate_columns": "",
     "batch_effect_columns": "",
     "donor_variable_column": "",
@@ -82,7 +87,7 @@ for name, default in expected_defaults.items():
         actual,
     )
 
-for name in ["matrix", "metadata", "pseudobulk_manifest"]:
+for name in ["matrix", "metadata", "pseudobulk_manifest", "pseudobulk_collection_manifest"]:
     assert by_name[name]["type"] == "file"
 assert "required" not in by_name["contrasts"]
 assert "default_value" not in by_name["contrasts"]
@@ -92,6 +97,11 @@ assert by_name["input_kind"]["extra_data"] == [
     "enrichment_score",
     "continuous_score",
 ]
+assert by_name["analysis_route"]["extra_data"] == [
+    "single_matrix",
+    "cell_type_collection",
+]
+assert by_name["contrast"]["extra_data"] == ["M-F"]
 assert by_name["input_data_type"]["extra_data"] == [
     "auto",
     "microarray_log2_expression",
@@ -137,6 +147,10 @@ assert result_names == [
     "run_summary.txt",
     "Variance_Diagnostic.csv",
     "variance_diagnostic.png",
+    "L2P_Multi_Input.csv",
+    "L2P_Multi_Input_Provenance.csv",
+    "Limma_Cell_Type_Collection_Catalog.csv",
+    "Limma_Cell_Type_Collection_Run_Summary.txt",
 ]
 
 environment = json.loads(Path(".codeocean/environment.json").read_text())

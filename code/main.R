@@ -15,14 +15,17 @@ source(file.path(code_dir, "adapter", "Limma_Adapter.R"))
 source(file.path(code_dir, "functions", "OMIX_Limma_Analysis.R"))
 
 option_list <- list(
+  make_option("--analysis_route", type = "character", default = "single_matrix", help = "single_matrix or cell_type_collection [default: %default]"),
   make_option("--matrix", type = "character", default = "", help = "Continuous matrix; blank discovers one compatible input under /data"),
   make_option("--metadata", type = "character", default = "", help = "Sample metadata; blank discovers one compatible input under /data"),
   make_option("--pseudobulk_manifest", type = "character", default = "", help = "Optional Pseudobulk_Manifest.dcf; blank discovers zero or one under /data"),
+  make_option("--pseudobulk_collection_manifest", type = "character", default = "", help = "Pseudobulk_Collection_Manifest.dcf; blank discovers exactly one under /data for cell_type_collection"),
   make_option("--gene_names_column", type = "character", default = "GeneName"),
   make_option("--sample_names_column", type = "character", default = "Sample"),
   make_option("--samples_to_include", type = "character", default = ""),
   make_option("--contrast_variable_columns", type = "character", default = "Group"),
   make_option("--contrasts", type = "character", default = "", help = "Optional comma-separated limma contrasts; blank infers the only replicated two-group comparison"),
+  make_option("--contrast", type = "character", default = "M-F", help = "Fixed donor-level collection contrast [default: %default]"),
   make_option("--covariate_columns", type = "character", default = ""),
   make_option("--batch_effect_columns", type = "character", default = "", help = "Optional comma-separated technical batch columns included in the model and eligible for downstream removal"),
   make_option("--donor_variable_column", type = "character", default = ""),
@@ -44,6 +47,54 @@ opt <- parse_args(OptionParser(
   description = "Code Ocean adapter for canonical OMIX Limma Analysis."
 ))
 
+analysis_route <- tolower(trimws(opt$analysis_route))
+if (!analysis_route %in% c("single_matrix", "cell_type_collection")) {
+  stop("--analysis_route must be single_matrix or cell_type_collection.", call. = FALSE)
+}
+if (identical(analysis_route, "single_matrix") &&
+    nzchar(trimws(opt$pseudobulk_collection_manifest))) {
+  stop(
+    "single_matrix does not accept --pseudobulk_collection_manifest. ",
+    "Use Pseudobulk_Manifest.dcf for one matrix or set ",
+    "--analysis_route cell_type_collection for selected/all collections.",
+    call. = FALSE
+  )
+}
+output_dir <- omix_limma_output_dir(opt$output_dir, code_dir)
+dir.create(output_dir, recursive = TRUE, showWarnings = FALSE)
+
+if (identical(analysis_route, "cell_type_collection")) {
+  # Route only the collection's explicit portable manifest to the canonical
+  # implementation.  Legacy matrix selectors are intentionally not inferred
+  # in this route, so a single-cell-type bundle cannot be mistaken for a
+  # selected/all collection.
+  legacy_values <- c(opt$matrix, opt$metadata, opt$pseudobulk_manifest,
+                     opt$contrasts, opt$samples_to_include)
+  if (any(nzchar(trimws(legacy_values)))) {
+    stop(
+      "cell_type_collection does not accept --matrix, --metadata, ",
+      "--pseudobulk_manifest, --contrasts, or --samples_to_include. ",
+      "Supply Pseudobulk_Collection_Manifest.dcf instead.",
+      call. = FALSE
+    )
+  }
+  collection_manifest_path <- omix_limma_resolve_collection_manifest(
+    opt$pseudobulk_collection_manifest,
+    code_dir
+  )
+  collection <- omix_limma_cell_type_collection(
+    pseudobulk_collection_manifest = collection_manifest_path,
+    output_dir = output_dir,
+    contrast = opt$contrast,
+    sample_names_column = opt$sample_names_column,
+    gene_names_column = opt$gene_names_column,
+    covariate_columns = omix_limma_split_csv(opt$covariate_columns),
+    batch_effect_columns = omix_limma_split_csv(opt$batch_effect_columns),
+    donor_variable_column = omix_limma_split_csv(opt$donor_variable_column)
+  )
+  message("Wrote OMIX Limma cell-type collection results to ", normalizePath(output_dir, mustWork = TRUE))
+  message("L2P Multi comparisons: ", paste(collection$comparisons, collapse = ","))
+} else {
 contrasts <- omix_limma_split_csv(opt$contrasts)
 contrast_columns <- omix_limma_split_csv(opt$contrast_variable_columns)
 if (!length(contrast_columns) %in% c(1L, 2L)) {
@@ -90,9 +141,6 @@ if (length(selected_samples) == 0L) {
 if (length(selected_samples) == 0L) {
   stop("No metadata sample IDs occur as columns in the continuous matrix.", call. = FALSE)
 }
-
-output_dir <- omix_limma_output_dir(opt$output_dir, code_dir)
-dir.create(output_dir, recursive = TRUE, showWarnings = FALSE)
 
 results <- omix_limma_analysis(
   Dataset = resolved$matrix,
@@ -210,9 +258,10 @@ writeLines(c(
   paste("genes modelled:", run$genes_modelled),
   paste("samples modelled:", run$samples_modelled),
   paste("consensus donor correlation:", run$consensus_correlation),
-  "canonical module: OMIX-Limma-Analysis 1.1.0 (interface 3)",
-  "canonical source: 8ad4cdb4ee92aff9f2b53f69a2e33137a4e1886c",
+  "canonical module: OMIX-Limma-Analysis 1.2.0 (interface 3)",
+  "canonical source: 54da7cf6f7d775211ad1e9e6a9fb5b850f91fcc5",
   "runtime profile: r-statistics r4.4.3-bioconductor3.20-v1"
 ), file.path(output_dir, "run_summary.txt"))
 
 message("Wrote OMIX Limma Analysis results to ", normalizePath(output_dir, mustWork = TRUE))
+}

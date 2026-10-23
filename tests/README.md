@@ -7,8 +7,10 @@ bash tests/run-tests.sh
 ```
 
 These checks cover syntax, attached-input discovery, raw-count rejection,
-SCT-manifest variance routing, output names, App Panel coverage/defaults, and
-the managed scientific file hash. They also self-test the reusable
+SCT-manifest variance routing, legacy one-matrix output names, collection
+manifest discovery, a representative collection-to-ordered-L2P-Multi CLI
+handoff, App Panel coverage/defaults, and the managed scientific file hash.
+They also self-test the reusable
 cross-environment comparator. Code Ocean validation is recorded separately and
 is not implied by local success.
 

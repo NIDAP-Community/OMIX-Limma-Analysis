@@ -4,8 +4,25 @@
 
 ### Changed
 
-- Synchronizes canonical OMIX Limma Analysis `1.1.0` (interface `3`) from
-  source commit `8ad4cdb4ee92aff9f2b53f69a2e33137a4e1886c`.
+- Synchronizes canonical OMIX Limma Analysis `1.2.0` (interface `3`) from
+  source commit `54da7cf6f7d775211ad1e9e6a9fb5b850f91fcc5` with its complete
+  byte-identical `R/` export.
+- Adds an adapter-owned `analysis_route` that preserves the legacy
+  `single_matrix` route and exposes canonical `cell_type_collection` routing
+  for selected/all OMIX Seurat Pseudobulk output. The collection route
+  discovers only one top-level `Pseudobulk_Collection_Manifest.dcf`, passes
+  canonical collection parameters unchanged, and rejects legacy matrix
+  selectors rather than silently reinterpreting them. Conversely,
+  `single_matrix` rejects a selected collection-manifest selector instead of
+  silently ignoring it.
+- Adds App Panel and README guidance for the exact OMIX L2P Multi handoff:
+  select canonical `L2P_Multi_Input.csv` as `deg_table` and use the ordered
+  stable-ID-qualified `<stable-cell-type-id>__M-F` comparisons from its
+  provenance sidecar. This adapter change does not read Seurat objects, pool
+  cells, fit an interaction model, or change canonical Limma science.
+- Adds adapter-owned collection discovery and representative CLI handoff tests
+  for the ordered L2P Multi table and provenance. Code Ocean validation,
+  exact-runtime equivalence, publication, and release remain pending.
 - Exposes declared technical batch columns and the opt-in batch-corrected
   continuous-expression handoff. The canonical model protects biological
   groups, and this deployment change does not alter DE statistics.
