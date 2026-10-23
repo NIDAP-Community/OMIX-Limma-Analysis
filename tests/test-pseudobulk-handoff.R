@@ -70,8 +70,8 @@ stopifnot(
   any(grepl("requested contrasts: B-A", summary_lines, fixed = TRUE)),
   any(grepl("resolved contrasts: B-A", summary_lines, fixed = TRUE)),
   any(grepl("contrast source: explicit", summary_lines, fixed = TRUE)),
-  any(grepl("canonical module: OMIX-Limma-Analysis 1.1.0 (interface 3)", summary_lines, fixed = TRUE)),
-  any(grepl("canonical source: 8ad4cdb4ee92aff9f2b53f69a2e33137a4e1886c", summary_lines, fixed = TRUE))
+  any(grepl("canonical module: OMIX-Limma-Analysis 1.2.0 (interface 3)", summary_lines, fixed = TRUE)),
+  any(grepl("canonical source: 54da7cf6f7d775211ad1e9e6a9fb5b850f91fcc5", summary_lines, fixed = TRUE))
 )
 
 # Declared technical batches are retained in the DE model and, only when
@@ -178,8 +178,8 @@ stopifnot(all(c(
 ) %in% names(numeric_results)))
 numeric_summary <- readLines(file.path(numeric_output_dir, "run_summary.txt"))
 stopifnot(
-  any(grepl("canonical module: OMIX-Limma-Analysis 1.1.0 (interface 3)", numeric_summary, fixed = TRUE)),
-  any(grepl("canonical source: 8ad4cdb4ee92aff9f2b53f69a2e33137a4e1886c", numeric_summary, fixed = TRUE))
+  any(grepl("canonical module: OMIX-Limma-Analysis 1.2.0 (interface 3)", numeric_summary, fixed = TRUE)),
+  any(grepl("canonical source: 54da7cf6f7d775211ad1e9e6a9fb5b850f91fcc5", numeric_summary, fixed = TRUE))
 )
 
 # Numeric-looking arithmetic is invalid when the modeled groups are not

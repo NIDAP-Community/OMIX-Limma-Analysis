@@ -161,6 +161,41 @@ omix_limma_resolve_manifest <- function(requested, code_dir) {
   candidates[[1L]]
 }
 
+# The collection command consumes the single top-level manifest written by the
+# canonical selected/all Pseudobulk collection entry point.  Discovery is
+# deliberately filename-specific: a regular Pseudobulk_Manifest.dcf belongs to
+# the legacy one-matrix route and is not an interchangeable collection input.
+omix_limma_resolve_collection_manifest <- function(requested = "", code_dir = getwd()) {
+  if (!is.null(requested) && length(requested) == 1L && !is.na(requested) &&
+      nzchar(trimws(requested))) {
+    return(omix_limma_validate_file(
+      requested,
+      "Selected pseudobulk collection manifest",
+      "dcf"
+    ))
+  }
+  roots <- omix_limma_data_roots(code_dir)
+  candidates <- unlist(lapply(roots, function(root) {
+    list.files(
+      root,
+      pattern = "^Pseudobulk_Collection_Manifest\\.dcf$",
+      recursive = TRUE,
+      full.names = TRUE,
+      ignore.case = TRUE,
+      include.dirs = FALSE
+    )
+  }), use.names = FALSE)
+  candidates <- sort(unique(normalizePath(candidates, mustWork = TRUE)))
+  omix_limma_choose_one(
+    candidates,
+    "Pseudobulk collection manifest",
+    paste(
+      "Attach Pseudobulk_Collection_Manifest.dcf from OMIX Seurat Pseudobulk",
+      "selected/all mode or select it explicitly."
+    )
+  )
+}
+
 omix_limma_validate_manifest <- function(manifest) {
   if (is.null(manifest)) return(invisible(NULL))
   matrix_type <- omix_limma_manifest_value(manifest, "matrix_type")

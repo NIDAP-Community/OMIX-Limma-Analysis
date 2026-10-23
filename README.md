@@ -24,6 +24,8 @@ Use this capsule for declared continuous matrices such as:
 - donor-level means from corrected `SCT/data` expression;
 - donor-level means from a declared corrected expression assay such as
   `Harmony/data`;
+- ordered selected/all donor-level cell-type Pseudobulk collections for
+  independent M-F analyses and OMIX L2P Multi handoff;
 - GSVA or ssGSEA enrichment scores; or
 - CIBERSORT relative fractions or absolute scores;
 - normalized microarray, bulk-expression, proteomics, metabolomics,
@@ -42,9 +44,11 @@ as generic continuous scores without a justified transformation.
 
 | Input | Requirement |
 | --- | --- |
+| Analysis Route | `single_matrix` preserves the established continuous-matrix workflow. `cell_type_collection` consumes selected/all OMIX Seurat Pseudobulk collection output. |
 | Continuous matrix | CSV, TSV, TXT, or RDS feature-by-sample table. The default feature column is `GeneName`. |
 | Sample metadata | CSV, TSV, TXT, or RDS table with a unique `Sample` column aligned to matrix sample columns. |
 | Pseudobulk manifest | Optional `Pseudobulk_Manifest.dcf` from OMIX Seurat Pseudobulk. Required for that workflow handoff. |
+| Pseudobulk collection manifest | `Pseudobulk_Collection_Manifest.dcf` from OMIX Seurat Pseudobulk `selected` or `all` mode. Required for `cell_type_collection`; it is not interchangeable with an ordinary Pseudobulk manifest. |
 
 Each input can be selected explicitly. When a selector is blank, the adapter
 recursively examines attached files under `/data` and proceeds only when one
@@ -95,6 +99,27 @@ scores return `effect` in the input units. See the
 [canonical module guide](https://github.com/NIDAP-Community/OMIX/tree/main/modules/OMIX-Limma-Analysis)
 for the variance-model recommendation for every supported data type.
 
+### Cell-type collection to L2P Multi
+
+Choose **Analysis Route = `cell_type_collection`** only after upstream OMIX
+Seurat Pseudobulk has completed its `selected` or `all` continuous-expression
+collection. Attach the complete collection bundle and select its top-level
+`Pseudobulk_Collection_Manifest.dcf`. Leaving that selector blank is safe only
+when the mounted inputs contain exactly one file with that exact name.
+
+The canonical collection interface runs an independent donor-level `M-F` Limma
+model for each ordered cell type. Every emitted type must have at least two
+donor-level M and F profiles, the same exact ordered tested-gene universe, and
+finite required statistics. It does not read Seurat objects, pool cells, or
+test a cell-type-by-sex interaction.
+
+The resulting `L2P_Multi_Input.csv` is the direct OMIX L2P Multi handoff:
+attach/select it as L2P Multi's `deg_table`. Use the ordered `Comparison`
+values in `L2P_Multi_Input_Provenance.csv` for its comparisons parameter; each
+has the stable form `<stable-cell-type-id>__M-F`. Do not rename, reorder, or
+combine those columns. The collection manifest, provenance file, and catalog
+remain part of the reproducibility record.
+
 ## Outputs
 
 | Output | Purpose |
@@ -105,6 +130,10 @@ for the variance-model recommendation for every supported data type.
 | `run_summary.txt` | Resolved inputs, variance model, design, contrasts, donor correlation, source, and runtime provenance. |
 | `Variance_Diagnostic.csv` | Per-feature average signal and pre-moderation residual standard deviation. |
 | `variance_diagnostic.png` | Visual check for a remaining mean-variance trend. |
+| `L2P_Multi_Input.csv` | Cell-Type Collection only: strict ordered `GeneName` plus `<stable-cell-type-id>__M-F_tstat`, `_pval`, and `_FC` families for OMIX L2P Multi. |
+| `L2P_Multi_Input_Provenance.csv` | Cell-Type Collection only: ordered comparison identities and source/model provenance. |
+| `Limma_Cell_Type_Collection_Catalog.csv` | Cell-Type Collection only: Pseudobulk eligibility/routing with Limma and L2P paths. |
+| `Limma_Cell_Type_Collection_Run_Summary.txt` | Cell-Type Collection only: manifest hashes, comparison order, tested-gene count, and strict common-universe statement. |
 
 ## Environment and reproducibility
 
@@ -124,6 +153,8 @@ the Code Ocean run or release identity with scientific results.
 | --- | --- |
 | No compatible matrix or metadata | Attach the required file or select it explicitly. |
 | Multiple compatible candidates | Select the intended file in the App Panel or attach only one input bundle. |
+| No or multiple Pseudobulk collection manifests | Choose `cell_type_collection`, attach the complete selected/all Pseudobulk collection, and select exactly one `Pseudobulk_Collection_Manifest.dcf`. |
+| Collection rejects a gene universe or profile count | Repair the upstream selected/all Pseudobulk bundle. Do not union/intersect features or pool cells in the adapter. |
 | `raw_integer_counts` | Run the bundle with OMIX DEG Analysis instead. |
 | No metadata IDs match matrix columns | Check sample naming and the Sample ID Column setting. |
 | Donor has no repeated profiles | Leave Donor Variable Column blank for an ordinary linear model. |

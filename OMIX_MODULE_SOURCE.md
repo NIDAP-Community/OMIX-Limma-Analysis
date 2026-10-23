@@ -4,11 +4,11 @@
 
 - **Module:** [OMIX Limma Analysis](https://github.com/NIDAP-Community/OMIX/tree/main/modules/OMIX-Limma-Analysis)
 - **Canonical path:** `modules/OMIX-Limma-Analysis/`
-- **Canonical module version:** `1.1.0`
+- **Canonical module version:** `1.2.0`
 - **Canonical interface version:** `3`
 - **Canonical release tag:** **Pending** — no validated namespaced module tag is established.
-- **Canonical source reference:** [`8ad4cdb4ee92aff9f2b53f69a2e33137a4e1886c`](https://github.com/NIDAP-Community/OMIX/commit/8ad4cdb4ee92aff9f2b53f69a2e33137a4e1886c)
-- **Interface schema:** [schemas/interface.yml](https://github.com/NIDAP-Community/OMIX/blob/8ad4cdb4ee92aff9f2b53f69a2e33137a4e1886c/modules/OMIX-Limma-Analysis/schemas/interface.yml)
+- **Canonical source reference:** [`54da7cf6f7d775211ad1e9e6a9fb5b850f91fcc5`](https://github.com/NIDAP-Community/OMIX/commit/54da7cf6f7d775211ad1e9e6a9fb5b850f91fcc5)
+- **Interface schema:** [schemas/interface.yml](https://github.com/NIDAP-Community/OMIX/blob/54da7cf6f7d775211ad1e9e6a9fb5b850f91fcc5/modules/OMIX-Limma-Analysis/schemas/interface.yml)
 - **Module contract:** [OMIX module contract](https://github.com/NIDAP-Community/OMIX/blob/main/docs/module-contract.md)
 
 ## Adapter release record
@@ -28,6 +28,16 @@
 
 The canonical source commit, adapter tag, public OCI digest, Code Ocean
 environment, capsule run, and platform release are separate facts.
+
+### Current collection-handoff candidate
+
+The adapter working branch contains a byte-identical export from canonical
+commit `54da7cf6f7d775211ad1e9e6a9fb5b850f91fcc5` and adapter-only translation
+for its optional cell-type collection interface. Local adapter checks cover
+manifest discovery, route translation, and a deterministic collection-to-L2P
+Multi fixture. This is not a Code Ocean run, a capsule release, an immutable
+runtime assertion, or cross-environment equivalence evidence. All platform
+validation and release facts for this candidate are **Pending**.
 
 ### Interface-3 Standard Capsule release
 
@@ -157,7 +167,7 @@ criteria are recorded in
 
 | Canonical file | Adapter copy | SHA-256 | Purpose |
 | --- | --- | --- | --- |
-| `R/OMIX_Limma_Analysis.R` | `code/functions/OMIX_Limma_Analysis.R` | `742e9a048e6a2617fddc3b8ab401014da6204f876f4a26eafea549219726146b` | Canonical Limma model, input-type contract, batch-corrected downstream handoff, transformations, variance routing, diagnostics, and result construction. |
+| `R/OMIX_Limma_Analysis.R` | `code/functions/OMIX_Limma_Analysis.R` | `c7afa223d1d0cf4ba7a73ed06d8d1c60e191a137a4c01a71671fe585fec8c69a` | Canonical Limma model, input-type contract, batch-corrected downstream handoff, transformations, variance routing, diagnostics, and selected/all cell-type collection-to-L2P Multi export. |
 
 The complete canonical `R/` tree contains this one file at the recorded source
 commit. The adapter copy is byte-identical; no scientific edit was applied.
@@ -167,6 +177,21 @@ commit. The adapter copy is byte-identical; no scientific edit was applied.
 - Canonical `matrix`, `metadata`, and optional `pseudobulk_manifest` paths are
   Code Ocean file selectors. Blank selectors trigger content-based discovery
   under `/data` and must be unambiguous.
+- Adapter-owned `analysis_route` selects either the unchanged `single_matrix`
+  translation or `cell_type_collection`. The collection route resolves only a
+  top-level `Pseudobulk_Collection_Manifest.dcf` and passes its explicit path,
+  the canonical fixed `M-F` contrast, and shared column/covariate/blocking
+  parameters to canonical OMIX. It rejects legacy matrix selectors in that
+  route rather than silently ignoring or reinterpreting them.
+- `pseudobulk_collection_manifest` is a Code Ocean file selector. If blank,
+  the adapter recursively discovers exactly one case-insensitive exact filename
+  `Pseudobulk_Collection_Manifest.dcf`; zero or multiple candidates are
+  diagnostic errors. The adapter does not parse Seurat objects, pool cells,
+  change Limma defaults, or implement L2P columns itself.
+- The collection's canonical `L2P_Multi_Input.csv` is the exact OMIX L2P Multi
+  `deg_table` handoff. Ordered `Comparison` values from its canonical
+  provenance sidecar are passed to L2P Multi as `<stable-cell-type-id>__M-F`;
+  no adapter renaming, reordering, union, intersection, or fill occurs.
 - Canonical `output_dir` is platform-managed as `/results` and is intentionally
   hidden from the App Panel.
 - Comma-separated App Panel fields are translated into canonical character
@@ -198,7 +223,7 @@ commit. The adapter copy is byte-identical; no scientific edit was applied.
   `.syncweaver-lock.json`.
 - **Interim content verification:** exact file-set and SHA-256 checks are in
   `tests/test-source-parity.py`.
-- **Host-side drift:** None in the initial export.
+- **Host-side drift:** None relative to canonical commit `54da7cf6f7d775211ad1e9e6a9fb5b850f91fcc5`.
 
 Scientific or reusable-interface changes must be made and validated in
 canonical OMIX first. Until Syncweaver onboards the mapping, Harbor may refresh
