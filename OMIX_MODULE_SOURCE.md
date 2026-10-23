@@ -182,7 +182,9 @@ commit. The adapter copy is byte-identical; no scientific edit was applied.
   top-level `Pseudobulk_Collection_Manifest.dcf` and passes its explicit path,
   the canonical fixed `M-F` contrast, and shared column/covariate/blocking
   parameters to canonical OMIX. It rejects legacy matrix selectors in that
-  route rather than silently ignoring or reinterpreting them.
+  route; conversely, `single_matrix` rejects a nonblank collection-manifest
+  selector. Neither route silently ignores or reinterprets the other route's
+  explicit input.
 - `pseudobulk_collection_manifest` is a Code Ocean file selector. If blank,
   the adapter recursively discovers exactly one case-insensitive exact filename
   `Pseudobulk_Collection_Manifest.dcf`; zero or multiple candidates are

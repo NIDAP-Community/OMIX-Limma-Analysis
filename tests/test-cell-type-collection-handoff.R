@@ -159,4 +159,23 @@ stopifnot(
   any(grepl("cell_type_collection does not accept", invalid, fixed = TRUE))
 )
 
+# The converse route guard is equally important because the static App Panel
+# shows both manifest selectors. A collection manifest must never be silently
+# ignored by the default legacy route.
+invalid_single_matrix <- system2(
+  file.path(R.home("bin"), "Rscript"),
+  c(
+    "code/main.R",
+    "--analysis_route", "single_matrix",
+    "--pseudobulk_collection_manifest", collection_manifest,
+    "--output_dir", file.path(work_dir, "invalid-single-matrix-results")
+  ),
+  stdout = TRUE,
+  stderr = TRUE
+)
+stopifnot(
+  identical(attr(invalid_single_matrix, "status"), 1L),
+  any(grepl("single_matrix does not accept --pseudobulk_collection_manifest", invalid_single_matrix, fixed = TRUE))
+)
+
 message("OMIX Limma Analysis cell-type collection adapter handoff checks passed")

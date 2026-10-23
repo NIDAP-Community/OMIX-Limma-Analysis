@@ -12,7 +12,9 @@
   for selected/all OMIX Seurat Pseudobulk output. The collection route
   discovers only one top-level `Pseudobulk_Collection_Manifest.dcf`, passes
   canonical collection parameters unchanged, and rejects legacy matrix
-  selectors rather than silently reinterpreting them.
+  selectors rather than silently reinterpreting them. Conversely,
+  `single_matrix` rejects a selected collection-manifest selector instead of
+  silently ignoring it.
 - Adds App Panel and README guidance for the exact OMIX L2P Multi handoff:
   select canonical `L2P_Multi_Input.csv` as `deg_table` and use the ordered
   stable-ID-qualified `<stable-cell-type-id>__M-F` comparisons from its

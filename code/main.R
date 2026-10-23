@@ -51,6 +51,15 @@ analysis_route <- tolower(trimws(opt$analysis_route))
 if (!analysis_route %in% c("single_matrix", "cell_type_collection")) {
   stop("--analysis_route must be single_matrix or cell_type_collection.", call. = FALSE)
 }
+if (identical(analysis_route, "single_matrix") &&
+    nzchar(trimws(opt$pseudobulk_collection_manifest))) {
+  stop(
+    "single_matrix does not accept --pseudobulk_collection_manifest. ",
+    "Use Pseudobulk_Manifest.dcf for one matrix or set ",
+    "--analysis_route cell_type_collection for selected/all collections.",
+    call. = FALSE
+  )
+}
 output_dir <- omix_limma_output_dir(opt$output_dir, code_dir)
 dir.create(output_dir, recursive = TRUE, showWarnings = FALSE)
 
