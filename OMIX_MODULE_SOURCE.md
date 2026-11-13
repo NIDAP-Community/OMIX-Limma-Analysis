@@ -4,11 +4,11 @@
 
 - **Module:** [OMIX Limma Analysis](https://github.com/NIDAP-Community/OMIX/tree/main/modules/OMIX-Limma-Analysis)
 - **Canonical path:** `modules/OMIX-Limma-Analysis/`
-- **Canonical module version:** `1.2.0`
-- **Canonical interface version:** `3`
+- **Canonical module version:** `2.0.0`
+- **Canonical interface version:** `4`
 - **Canonical release tag:** **Pending** — no validated namespaced module tag is established.
-- **Canonical source reference:** [`54da7cf6f7d775211ad1e9e6a9fb5b850f91fcc5`](https://github.com/NIDAP-Community/OMIX/commit/54da7cf6f7d775211ad1e9e6a9fb5b850f91fcc5)
-- **Interface schema:** [schemas/interface.yml](https://github.com/NIDAP-Community/OMIX/blob/54da7cf6f7d775211ad1e9e6a9fb5b850f91fcc5/modules/OMIX-Limma-Analysis/schemas/interface.yml)
+- **Canonical source reference:** [`bf27e1011cab40c608593b5cc3c997617a377ed2`](https://github.com/NIDAP-Community/OMIX/commit/bf27e1011cab40c608593b5cc3c997617a377ed2)
+- **Interface schema:** [schemas/interface.yml](https://github.com/NIDAP-Community/OMIX/blob/bf27e1011cab40c608593b5cc3c997617a377ed2/modules/OMIX-Limma-Analysis/schemas/interface.yml)
 - **Module contract:** [OMIX module contract](https://github.com/NIDAP-Community/OMIX/blob/main/docs/module-contract.md)
 
 ## Adapter release record
@@ -32,8 +32,8 @@ environment, capsule run, and platform release are separate facts.
 ### Current collection-handoff candidate
 
 The adapter working branch contains a byte-identical export from canonical
-commit `54da7cf6f7d775211ad1e9e6a9fb5b850f91fcc5` and adapter-only translation
-for its optional cell-type collection interface. Local adapter checks cover
+commit `bf27e1011cab40c608593b5cc3c997617a377ed2` and adapter-only translation
+for its optional cell-category collection interface. Local adapter checks cover
 manifest discovery, route translation, and a deterministic collection-to-L2P
 Multi fixture. This is not a Code Ocean run, a capsule release, an immutable
 runtime assertion, or cross-environment equivalence evidence. All platform
@@ -167,7 +167,7 @@ criteria are recorded in
 
 | Canonical file | Adapter copy | SHA-256 | Purpose |
 | --- | --- | --- | --- |
-| `R/OMIX_Limma_Analysis.R` | `code/functions/OMIX_Limma_Analysis.R` | `c7afa223d1d0cf4ba7a73ed06d8d1c60e191a137a4c01a71671fe585fec8c69a` | Canonical Limma model, input-type contract, batch-corrected downstream handoff, transformations, variance routing, diagnostics, and selected/all cell-type collection-to-L2P Multi export. |
+| `R/OMIX_Limma_Analysis.R` | `code/functions/OMIX_Limma_Analysis.R` | `f9ccc72dd44d5d0b3eac60bc1d66c01c9217f31e31ec2cc0bb2eef7165055768` | Canonical Limma model, input-type contract, batch-corrected downstream handoff, transformations, variance routing, diagnostics, and selected/all cell-category collection-to-L2P Multi export. |
 
 The complete canonical `R/` tree contains this one file at the recorded source
 commit. The adapter copy is byte-identical; no scientific edit was applied.
@@ -178,7 +178,7 @@ commit. The adapter copy is byte-identical; no scientific edit was applied.
   Code Ocean file selectors. Blank selectors trigger content-based discovery
   under `/data` and must be unambiguous.
 - Adapter-owned `analysis_route` selects either the unchanged `single_matrix`
-  translation or `cell_type_collection`. The collection route resolves only a
+  translation or `cell_category_collection`. The collection route resolves only a
   top-level `Pseudobulk_Collection_Manifest.dcf` and passes its explicit path,
   the canonical fixed `M-F` contrast, and shared column/covariate/blocking
   parameters to canonical OMIX. It rejects legacy matrix selectors in that
@@ -192,7 +192,7 @@ commit. The adapter copy is byte-identical; no scientific edit was applied.
   change Limma defaults, or implement L2P columns itself.
 - The collection's canonical `L2P_Multi_Input.csv` is the exact OMIX L2P Multi
   `deg_table` handoff. Ordered `Comparison` values from its canonical
-  provenance sidecar are passed to L2P Multi as `<stable-cell-type-id>__M-F`;
+  provenance sidecar are passed to L2P Multi as `<stable-cell-category-id>__M-F`;
   no adapter renaming, reordering, union, intersection, or fill occurs.
 - Canonical `output_dir` is platform-managed as `/results` and is intentionally
   hidden from the App Panel.
@@ -225,7 +225,7 @@ commit. The adapter copy is byte-identical; no scientific edit was applied.
   `.syncweaver-lock.json`.
 - **Interim content verification:** exact file-set and SHA-256 checks are in
   `tests/test-source-parity.py`.
-- **Host-side drift:** None relative to canonical commit `54da7cf6f7d775211ad1e9e6a9fb5b850f91fcc5`.
+- **Host-side drift:** None relative to canonical commit `bf27e1011cab40c608593b5cc3c997617a377ed2`.
 
 Scientific or reusable-interface changes must be made and validated in
 canonical OMIX first. Until Syncweaver onboards the mapping, Harbor may refresh

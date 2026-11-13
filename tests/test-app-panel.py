@@ -99,7 +99,7 @@ assert by_name["input_kind"]["extra_data"] == [
 ]
 assert by_name["analysis_route"]["extra_data"] == [
     "single_matrix",
-    "cell_type_collection",
+    "cell_category_collection",
 ]
 assert by_name["contrast"]["extra_data"] == ["M-F"]
 assert by_name["input_data_type"]["extra_data"] == [
@@ -149,8 +149,8 @@ assert result_names == [
     "variance_diagnostic.png",
     "L2P_Multi_Input.csv",
     "L2P_Multi_Input_Provenance.csv",
-    "Limma_Cell_Type_Collection_Catalog.csv",
-    "Limma_Cell_Type_Collection_Run_Summary.txt",
+    "Limma_Cell_Category_Collection_Catalog.csv",
+    "Limma_Cell_Category_Collection_Run_Summary.txt",
 ]
 
 environment = json.loads(Path(".codeocean/environment.json").read_text())

@@ -11,14 +11,14 @@ write_bundle_manifest <- function(path) {
 
 make_collection <- function(root) {
   ids <- c(
-    "ct-t-cells-11111111111111111111111111111111",
-    "ct-monocytes-22222222222222222222222222222222"
+    "cc-t-cells-11111111111111111111111111111111",
+    "cc-monocytes-22222222222222222222222222222222"
   )
   labels <- c("T cells", "Monocytes")
   catalog_rows <- list()
   for (index in seq_along(ids)) {
     id <- ids[[index]]
-    bundle_dir <- file.path(root, "cell_types", id)
+    bundle_dir <- file.path(root, "cell_categories", id)
     dir.create(bundle_dir, recursive = TRUE, showWarnings = FALSE)
     samples <- c(paste0("M", seq_len(3L)), paste0("F", seq_len(3L)))
     matrix <- data.frame(
@@ -32,7 +32,7 @@ make_collection <- function(root) {
       Sample = samples,
       Donor = samples,
       Group = c(rep("M", 3L), rep("F", 3L)),
-      CellType = labels[[index]],
+      CellCategory = labels[[index]],
       Cells = 40L,
       stringsAsFactors = FALSE,
       check.names = FALSE
@@ -41,17 +41,18 @@ make_collection <- function(root) {
     utils::write.csv(metadata, file.path(bundle_dir, "Pseudobulk_Sample_Metadata.csv"), row.names = FALSE)
     write_bundle_manifest(file.path(bundle_dir, "Pseudobulk_Manifest.dcf"))
     catalog_rows[[index]] <- data.frame(
-      CellTypeID = id,
-      CellType = labels[[index]],
+      CellCategoryID = id,
+      CellCategory = labels[[index]],
       SelectionMode = "selected",
       Donor = metadata$Donor,
       Group = metadata$Group,
       Cells = metadata$Cells,
       MinCells = 20L,
       ProfileEligibility = "eligible",
-      MatrixPath = file.path("cell_types", id, "SCT_Mean_Log2_Expression.csv"),
-      MetadataPath = file.path("cell_types", id, "Pseudobulk_Sample_Metadata.csv"),
-      BundleManifestPath = file.path("cell_types", id, "Pseudobulk_Manifest.dcf"),
+      CellCategoryEligibility = "included",
+      MatrixPath = file.path("cell_categories", id, "SCT_Mean_Log2_Expression.csv"),
+      MetadataPath = file.path("cell_categories", id, "Pseudobulk_Sample_Metadata.csv"),
+      BundleManifestPath = file.path("cell_categories", id, "Pseudobulk_Manifest.dcf"),
       AggregationMethod = "mean_sctransform_expression",
       SourceAssay = "SCT",
       SourceLayer = "data",
@@ -62,22 +63,24 @@ make_collection <- function(root) {
   }
   utils::write.csv(
     do.call(rbind, catalog_rows),
-    file.path(root, "Cell_Type_Profile_Catalog.csv"),
+    file.path(root, "Cell_Category_Profile_Catalog.csv"),
     row.names = FALSE
   )
   manifest_path <- file.path(root, "Pseudobulk_Collection_Manifest.dcf")
   base::write.dcf(data.frame(
-    format_version = "1",
-    collection_kind = "cell_type_pseudobulk",
-    cell_type_selection_mode = "selected",
-    selected_cell_type_count = "2",
+    format_version = "2",
+    collection_kind = "cell_category_pseudobulk",
+    cell_category_selection_mode = "selected",
+    selected_cell_category_count = "2",
+    written_cell_category_count = "2",
+    dropped_cell_category_count = "0",
     aggregation_method = "mean_sctransform_expression",
     source_assay = "SCT",
     source_layer = "data",
     source_seurat_rds = "/not-a-real-study-object.rds",
     min_cells = "20",
     on_insufficient_cells = "error",
-    profile_catalog = "Cell_Type_Profile_Catalog.csv",
+    profile_catalog = "Cell_Category_Profile_Catalog.csv",
     stringsAsFactors = FALSE
   ), manifest_path)
   manifest_path
@@ -97,7 +100,7 @@ output <- system2(
   file.path(R.home("bin"), "Rscript"),
   c(
     "code/main.R",
-    "--analysis_route", "cell_type_collection",
+    "--analysis_route", "cell_category_collection",
     "--pseudobulk_collection_manifest", collection_manifest,
     "--contrast", "M-F",
     "--output_dir", output_dir
@@ -106,18 +109,18 @@ output <- system2(
   stderr = TRUE
 )
 if (!is.null(attr(output, "status"))) {
-  stop("Cell-type collection adapter command failed:\n", paste(output, collapse = "\n"))
+  stop("Cell-category collection adapter command failed:\n", paste(output, collapse = "\n"))
 }
 
 expected_comparisons <- c(
-  "ct-t-cells-11111111111111111111111111111111__M-F",
-  "ct-monocytes-22222222222222222222222222222222__M-F"
+  "cc-t-cells-11111111111111111111111111111111__M-F",
+  "cc-monocytes-22222222222222222222222222222222__M-F"
 )
 expected_outputs <- c(
   "L2P_Multi_Input.csv",
   "L2P_Multi_Input_Provenance.csv",
-  "Limma_Cell_Type_Collection_Catalog.csv",
-  "Limma_Cell_Type_Collection_Run_Summary.txt"
+  "Limma_Cell_Category_Collection_Catalog.csv",
+  "Limma_Cell_Category_Collection_Run_Summary.txt"
 )
 stopifnot(all(file.exists(file.path(output_dir, expected_outputs))))
 wide <- utils::read.csv(file.path(output_dir, "L2P_Multi_Input.csv"), check.names = FALSE)
@@ -146,9 +149,9 @@ invalid <- system2(
   file.path(R.home("bin"), "Rscript"),
   c(
     "code/main.R",
-    "--analysis_route", "cell_type_collection",
+    "--analysis_route", "cell_category_collection",
     "--pseudobulk_collection_manifest", collection_manifest,
-    "--matrix", file.path(collection_root, "cell_types", "ct-t-cells-11111111111111111111111111111111", "SCT_Mean_Log2_Expression.csv"),
+    "--matrix", file.path(collection_root, "cell_categories", "cc-t-cells-11111111111111111111111111111111", "SCT_Mean_Log2_Expression.csv"),
     "--output_dir", file.path(work_dir, "invalid-results")
   ),
   stdout = TRUE,
@@ -156,7 +159,7 @@ invalid <- system2(
 )
 stopifnot(
   identical(attr(invalid, "status"), 1L),
-  any(grepl("cell_type_collection does not accept", invalid, fixed = TRUE))
+  any(grepl("cell_category_collection does not accept", invalid, fixed = TRUE))
 )
 
 # The converse route guard is equally important because the static App Panel
@@ -178,4 +181,4 @@ stopifnot(
   any(grepl("single_matrix does not accept --pseudobulk_collection_manifest", invalid_single_matrix, fixed = TRUE))
 )
 
-message("OMIX Limma Analysis cell-type collection adapter handoff checks passed")
+message("OMIX Limma Analysis cell-category collection adapter handoff checks passed")

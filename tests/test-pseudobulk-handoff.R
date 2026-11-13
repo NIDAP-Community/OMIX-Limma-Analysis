@@ -70,8 +70,8 @@ stopifnot(
   any(grepl("requested contrasts: B-A", summary_lines, fixed = TRUE)),
   any(grepl("resolved contrasts: B-A", summary_lines, fixed = TRUE)),
   any(grepl("contrast source: explicit", summary_lines, fixed = TRUE)),
-  any(grepl("canonical module: OMIX-Limma-Analysis 1.2.0 (interface 3)", summary_lines, fixed = TRUE)),
-  any(grepl("canonical source: 54da7cf6f7d775211ad1e9e6a9fb5b850f91fcc5", summary_lines, fixed = TRUE))
+  any(grepl("canonical module: OMIX-Limma-Analysis 2.0.0 (interface 4)", summary_lines, fixed = TRUE)),
+  any(grepl("canonical source: bf27e1011cab40c608593b5cc3c997617a377ed2", summary_lines, fixed = TRUE))
 )
 
 # Declared technical batches are retained in the DE model and, only when
@@ -178,8 +178,8 @@ stopifnot(all(c(
 ) %in% names(numeric_results)))
 numeric_summary <- readLines(file.path(numeric_output_dir, "run_summary.txt"))
 stopifnot(
-  any(grepl("canonical module: OMIX-Limma-Analysis 1.2.0 (interface 3)", numeric_summary, fixed = TRUE)),
-  any(grepl("canonical source: 54da7cf6f7d775211ad1e9e6a9fb5b850f91fcc5", numeric_summary, fixed = TRUE))
+  any(grepl("canonical module: OMIX-Limma-Analysis 2.0.0 (interface 4)", numeric_summary, fixed = TRUE)),
+  any(grepl("canonical source: bf27e1011cab40c608593b5cc3c997617a377ed2", numeric_summary, fixed = TRUE))
 )
 
 # Numeric-looking arithmetic is invalid when the modeled groups are not
@@ -208,7 +208,7 @@ message("OMIX Limma Analysis numeric-group workflow-handoff checks passed")
 # The deployment entry point must pass the new interface-3 CIBERSORT controls
 # to the canonical function rather than implementing its own transformation.
 fraction_matrix <- data.frame(
-  GeneName = c("CellType1", "CellType2", "CellType3"),
+  GeneName = c("CellCategory1", "CellCategory2", "CellCategory3"),
   D1__A = c(0.20, 0.30, 0.50), D2__A = c(0.25, 0.25, 0.50),
   D3__A = c(0.30, 0.20, 0.50), D1__B = c(0.50, 0.20, 0.30),
   D2__B = c(0.55, 0.15, 0.30), D3__B = c(0.60, 0.10, 0.30),

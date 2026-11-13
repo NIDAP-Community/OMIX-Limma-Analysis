@@ -105,14 +105,14 @@ stopifnot(
 # adapter may discover it only when exactly one filename-specific candidate is
 # attached, never by confusing an ordinary Pseudobulk_Manifest.dcf with a
 # collection contract.
-collection_dir <- file.path(root, "cell-type-collection")
+collection_dir <- file.path(root, "cell-category-collection")
 dir.create(collection_dir)
 collection_manifest <- file.path(collection_dir, "Pseudobulk_Collection_Manifest.dcf")
 base::write.dcf(data.frame(
-  format_version = "1",
-  collection_kind = "cell_type_pseudobulk",
-  cell_type_selection_mode = "selected",
-  profile_catalog = "Cell_Type_Profile_Catalog.csv",
+  format_version = "2",
+  collection_kind = "cell_category_pseudobulk",
+  cell_category_selection_mode = "selected",
+  profile_catalog = "Cell_Category_Profile_Catalog.csv",
   stringsAsFactors = FALSE
 ), collection_manifest)
 resolved_collection <- omix_limma_resolve_collection_manifest(
@@ -120,7 +120,7 @@ resolved_collection <- omix_limma_resolve_collection_manifest(
 )
 stopifnot(identical(resolved_collection, normalizePath(collection_manifest)))
 
-second_collection_dir <- file.path(root, "second-cell-type-collection")
+second_collection_dir <- file.path(root, "second-cell-category-collection")
 dir.create(second_collection_dir)
 second_collection_manifest <- file.path(
   second_collection_dir,
