@@ -4,11 +4,16 @@
 
 ### Changed
 
+- Synchronized the managed export and Code Ocean translation with canonical
+  OMIX Limma Analysis `2.0.0`, interface `4`, at `bf27e101`. The collection
+  route, artifacts, and documentation now use the matching cell-category
+  contract; the pinned runtime is unchanged.
+
 - Synchronizes canonical OMIX Limma Analysis `1.2.0` (interface `3`) from
   source commit `54da7cf6f7d775211ad1e9e6a9fb5b850f91fcc5` with its complete
   byte-identical `R/` export.
 - Adds an adapter-owned `analysis_route` that preserves the legacy
-  `single_matrix` route and exposes canonical `cell_type_collection` routing
+  `single_matrix` route and exposes canonical `cell_category_collection` routing
   for selected/all OMIX Seurat Pseudobulk output. The collection route
   discovers only one top-level `Pseudobulk_Collection_Manifest.dcf`, passes
   canonical collection parameters unchanged, and rejects legacy matrix
@@ -17,7 +22,7 @@
   silently ignoring it.
 - Adds App Panel and README guidance for the exact OMIX L2P Multi handoff:
   select canonical `L2P_Multi_Input.csv` as `deg_table` and use the ordered
-  stable-ID-qualified `<stable-cell-type-id>__M-F` comparisons from its
+  stable-ID-qualified `<stable-cell-category-id>__M-F` comparisons from its
   provenance sidecar. This adapter change does not read Seurat objects, pool
   cells, fit an interaction model, or change canonical Limma science.
 - Adds adapter-owned collection discovery and representative CLI handoff tests

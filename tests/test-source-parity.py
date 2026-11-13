@@ -5,8 +5,8 @@ import re
 from pathlib import Path
 
 
-expected_commit = "54da7cf6f7d775211ad1e9e6a9fb5b850f91fcc5"
-expected_hash = "c7afa223d1d0cf4ba7a73ed06d8d1c60e191a137a4c01a71671fe585fec8c69a"
+expected_commit = "bf27e1011cab40c608593b5cc3c997617a377ed2"
+expected_hash = "f9ccc72dd44d5d0b3eac60bc1d66c01c9217f31e31ec2cc0bb2eef7165055768"
 source_record = Path("OMIX_MODULE_SOURCE.md").read_text()
 
 commit_match = re.search(
